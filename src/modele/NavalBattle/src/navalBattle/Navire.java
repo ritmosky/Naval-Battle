@@ -59,6 +59,10 @@ public class Navire {
 	public void addCasesNavire(String coord) { this.cases.add(coord); }
 	
 	public void addCasesTouchees(String coord) { this.casesTouchees.add(coord); }
+	
+	public boolean getPremierTirEffectue() { return false;}
+	
+	public void premierTir() {}
 }
 
 
@@ -118,7 +122,11 @@ class Destroyer extends Navire {
 	@Override
 	public boolean estDestroyer() { return true; }
 	
+	@Override
 	public void premierTir() { this.premierTirEffectue = true; }
+	
+	@Override
+	public boolean getPremierTirEffectue() { return this.premierTirEffectue; }
 }
 
 

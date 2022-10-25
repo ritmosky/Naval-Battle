@@ -214,7 +214,7 @@ public class Controller {
 
 	public boolean deplacerNavire(Joueur j, String navireCoord) {
 		System.out.print("\n\n----- DEPLACER ----- \n");
-		Scanner in = new Scanner (System.in); 
+		Scanner inn = new Scanner (System.in); 
 
 		// AFFICHAGE DU NAVIRE A DEPLACER
 		int indNavireADeplacer = this.trouverNavireAvecCoord(j, navireCoord);
@@ -235,7 +235,7 @@ public class Controller {
 		// DEPLACEMENT HORIZONTAL
 		if (navireADeplacer.disposition == "horizontale") {
 			System.out.print("\nDisposition: Horizontale\n- Sens de deplacement ? O pour la gauche et 1 pour la droite : \n\n=> choix: ");
-			int choice = in.nextInt();
+			int choice = inn.nextInt();
 
 			// DEPLACER VERS LA GAUCHE
 			if (choice == 0) { 
@@ -278,7 +278,7 @@ public class Controller {
 		// DEPLACEMENT VERTICAL
 		else if (navireADeplacer.disposition == "verticale") {
 			System.out.print("\nDisposition: Verticale \n- Sens de deplacement: O pour le haut et 1 pour le bas : \n\n=> choix: ");
-			int choice = in.nextInt();
+			int choice = inn.nextInt();
 
 			// DEPLACER VERS LE HAUT
 			if (choice == 0) { 
@@ -326,6 +326,15 @@ public class Controller {
 
 	// ------------------------ TIR ------------------------ //
 
+	/*Chaque destroyer n’est muni que d’une seule fusée éclairante. Le premier tir d’un destroyer 
+	 * dévoile un carré de 4*4 cases dans la grille adverse à partir du coin haut et gauche. 
+	 * Mais attention, les navires adverses de ce carré ne seront visibles que lors du tour du 
+	 * jeu (quelques secondes)
+	 * , les sous-marins ne peuvent 
+	 *  être coulés que par d’autres sous-marins. Dans ce cas, le navire adverse coulé disparaît et 
+	 *  la case touchée s’affiche sur la grille n° 2.*/
+
+
 
 	// TIRER SUR NAVIRE ENNEMI pensez aux cases libre grid2, les navires coulee disparaissent ---------------------------------
 	public boolean tirerSurNavire(Joueur j, Joueur otherJ, String coord) {
@@ -342,7 +351,7 @@ public class Controller {
 		// DEMANDER LES COORDONNEES DE LA CIBLE
 		System.out.print("\nDonner les coordonnees de la cible dans la grille 2: ");
 		String coordCible = inn.nextLine();
-
+		Navire navireCible = otherJ.getNavires().get(indexNavireChoisi);
 
 		// LES COORDONNEES ONT DEJA ETE RENSEIGNEES
 		if (grid2.estCaseVide(coordCible) == false) { 
@@ -351,35 +360,35 @@ public class Controller {
 		}
 
 		// LES COORDONNEES NE SONT PAS CELLES D'UN NAVIRE ENNEMI
-		if (grid1Ennemy.estCaseNavire(coordCible) == false) { 
+		if (grid2.estCaseNavire(coordCible) == false) { 
 			System.out.print("\n!!! Tir Loupee !!!");
 			grid2.setCase("tt", coordCible);
 			return true;
 		}
 
-		/*	
-			// LES COORDONNEES SONT CELLES D'UN NAVIRE ENNEMI
-			if (grid1Ennemy.getCasesNavires().contains(coord)) { 
+		// LES COORDONNEES SONT CELLES D'UN NAVIRE ENNEMI
+		if (grid2.estCaseNavire(coordCible) == true) {
+			// CAS DU PREMIER TIR DU DESTROYER
+			if (navireChoisi.estDestroyer() == true && navireChoisi.getPremierTirEffectue() == true) {
+				navireChoisi.premierTir();
+				// recherche coin le plus haut a gauche
+				// recherche de 4 cases
+				// les faire apparaitres pendant quelques secondes
+			}
 
-				// CAS DU DESTROYER
-				if (navire.isDestoyer == true) {
-					// trouver coinHautGauche puis carre 4x4, chronometrer le temps daffichage
-				}
+			// CAS DU SOUS MARIN DETRUISANT UN SOUS MARIN, sous marin adverse disparait? cases libres?
+			if (navireChoisi.estSousMarin() == true && navireCible.estSousMarin()) {
 
-				// CAS DU SOUS MARIN, SEUL UN SOUS MARIN PEUT COULER UN SOUS MARIN
-				if ((navireCible.isSousMarin == true) && (navireCible.getCases().size() == navireCible.taille-1)) {
-					if (navire.isSousMarin == false) {
-						//return f
-					}
-				}
+			}
+			grid1Ennemy.setCase("xx", coordCible);
+			//grid2.setCase("xx", coordCible);
+		}
 
-				// AJOUT DE LA CASE TOUCHEE
-				otherJ.getNavires().get(indEnnemi).addCasesTouchees(coord);
-				if (navireCible.getCases().size() == navireCible.taille) {
-					otherJ.getNavires().get(indEnnemi).setCoule();
-					return true;
-				}
-			}*/
+		
+		if (navireCible.estCoule() == true) {
+
+		}
+
 		return false;
 	}
 }
