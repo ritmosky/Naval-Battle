@@ -1,6 +1,7 @@
 package navalBattle;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -104,12 +105,20 @@ public class Controller {
 	}
 
 
+	public void setGrid2(Joueur j1, Joueur j2) {
+		Grille2 grid2J1 = j1.getGrid2();
+		grid2J1.setCases(j2.getGrid1().getCases());
+
+		Grille2 grid2J2 = j2.getGrid2();
+		grid2J2.setCases(j2.getGrid1().getCases());
+	}
+
+
 	// ------------------------ AFFICHAGE DES 2 GRILLES ------------------------ //
 
 
 	public void afficher2Grilles(Joueur currentPlayer, Joueur ennemi) {
 		System.out.print("\n");
-		System.out.print("\n----- Tour de " + currentPlayer.name + " -----\n\n\n");
 		System.out.print("\t\t" + "  GRILLE 1" + "\t\t\t\t\t\t\t\t" + "  GRILLE 2\n\n\n");
 
 		int nCol = currentPlayer.getGrid1().nCol;
@@ -117,8 +126,6 @@ public class Controller {
 
 		Grille1 grid1CurrentJ = currentPlayer.getGrid1();
 		Grille2 grid2CurrentJ = currentPlayer.getGrid2();
-
-		grid2CurrentJ.setCases(ennemi.getGrid1().getCases());
 
 		// CONSTRUCTION DU CADRE
 		for (int n=0; n<2; n++) {	
@@ -149,15 +156,6 @@ public class Controller {
 			for (int j=0; j< nCol; j++) {
 				char y = alphCol.charAt(i);
 				String coord = Character.toString(y) + j;
-				/*if (grid1CurrentJ.estCaseNavireTouchee(coord)) {
-					System.out.print("xx");
-				}
-				else if (grid1CurrentJ.estCaseVideTouchee(coord)) {
-					System.out.print("tt");
-				}
-				else {
-					System.out.print(grid1CurrentJ.getCase(coord));	
-				}*/
 				System.out.print(grid1CurrentJ.getCase(coord));	
 				System.out.print("|");		
 			}
@@ -168,17 +166,7 @@ public class Controller {
 			for (int j=0; j< nCol; j++) {
 				char y = alphCol.charAt(i);
 				String coord = Character.toString(y) + j;
-				/*if (grid2CurrentJ.getCasesNavireTouchees().contains(coord)) {
-					System.out.print("xx");
-				}
-				else if (grid2CurrentJ.getCasesTouchees().contains(coord)) {
-					System.out.print("tt");
-				}
-				else {
-					//System.out.print("  ");	
-					System.out.print(grid2CurrentJ.getCase(coord));	
-				}*/
-				System.out.print(grid2CurrentJ.getCase(coord));	
+				System.out.print(grid2CurrentJ.masquerCase(coord));
 				System.out.print("|");		
 			}
 			System.out.print("\n");
@@ -214,107 +202,48 @@ public class Controller {
 
 	public boolean deplacerNavire(Joueur j, String navireCoord) {
 		System.out.print("\n\n----- DEPLACER ----- \n");
-		Scanner inn = new Scanner (System.in); 
+		Scanner inDeplacer = new Scanner (System.in); 
 
 		// AFFICHAGE DU NAVIRE A DEPLACER
 		int indNavireADeplacer = this.trouverNavireAvecCoord(j, navireCoord);
 		Navire navireADeplacer = j.getNavires().get(indNavireADeplacer);
-		String symbole = navireADeplacer.symbole;
 
-		Grille grid1 = j.getGrid1();
 		ArrayList<String> newCoords = new ArrayList<String>();
 
-
-		// ON NE PEUT PAS DEPLACER UN NAVIRE TOUCHE
-		if (navireADeplacer.getCasesTouchees().size() != 0) { 
+		// ON NE PEUT PAS DEPLACER UN NAVIRE TOUCHE navireADeplacer.getCasesTouchees().size()
+		if (navireADeplacer.getCasesTouchees() != null) { 
 			System.out.print("\n\n- !!! Navire touche, Deplacement impossible !!! \n");
 			return false; 
 		}
 
+		// DEPLACEMENT DU SOUS MARIN
+		if (navireADeplacer.estSousMarin() == true) { 
+			System.out.print("\n- Sens de deplacement ? O => pour le haut | 1 => pour le bas | 2 => pour la gauche | 3 => pour la droite : \n\n=> choix: ");
+			int choice = inDeplacer.nextInt();
+			newCoords = j.deplacer(navireADeplacer, choice);
+			if (newCoords == null) {
+				return false;
+			}
+			return true; 
+		}
 
 		// DEPLACEMENT HORIZONTAL
 		if (navireADeplacer.disposition == "horizontale") {
-			System.out.print("\nDisposition: Horizontale\n- Sens de deplacement ? O pour la gauche et 1 pour la droite : \n\n=> choix: ");
-			int choice = inn.nextInt();
-
-			// DEPLACER VERS LA GAUCHE
-			if (choice == 0) { 
-				for (String coord: navireADeplacer.getCasesNavire()) { 
-					int x = grid1.stringToXY(coord)[0]; 
-					int y = grid1.stringToXY(coord)[1]; 
-					String xyString = grid1.xyToString(x-1, y);
-					if (grid1.estCaseVide(xyString) == false) { 
-						System.out.print("\n\n- !!! Presence d obstacles, Deplacement impossible !!! \n");
-						return false; 
-					}
-					// MODIFICATION DE LA GRILLE 1
-					grid1.setCase("  ", coord);
-					grid1.setCase(symbole, xyString);
-					// STOCKAGE DES NOUVEAUX COORDONNEES DU NAVIRE
-					newCoords.add(xyString);
-				}
-			}
-
-			// DEPLACER VERS LA DROITE
-			else if (choice == 1) { 
-				for (String coord: navireADeplacer.getCasesNavire()) { 
-					int x = grid1.stringToXY(coord)[0]; 
-					int y = grid1.stringToXY(coord)[1]; 
-					String xyString = grid1.xyToString(x+1, y);
-					if (grid1.estCaseVide(xyString) == false) { 
-						System.out.print("\n\n- !!! Presence d obstacles, Deplacement impossible !!! \n");
-						return false; 
-					}
-					// MODIFICATION DE LA GRILLE 1
-					grid1.setCase("  ", coord);
-					grid1.setCase(symbole, xyString);
-					// STOCKAGE DES NOUVEAUX COORDONNEES DU NAVIRE
-					newCoords.add(xyString);
-				}
-			}
+			System.out.print("\nDisposition: Horizontale\n- Sens de deplacement ? 2 => pour la gauche | 3 => pour la droite : \n\n=> choix: ");
+			int choice = inDeplacer.nextInt();
+			newCoords = j.deplacer(navireADeplacer, choice);
 		}
-
 
 		// DEPLACEMENT VERTICAL
 		else if (navireADeplacer.disposition == "verticale") {
-			System.out.print("\nDisposition: Verticale \n- Sens de deplacement: O pour le haut et 1 pour le bas : \n\n=> choix: ");
-			int choice = inn.nextInt();
+			System.out.print("\nDisposition: Verticale \n- Sens de deplacement ? O => pour le haut | 1 => pour le bas : \n\n=> choix: ");
+			int choice = inDeplacer.nextInt();
+			newCoords = j.deplacer(navireADeplacer, choice);
+		}
 
-			// DEPLACER VERS LE HAUT
-			if (choice == 0) { 
-				for (String coord: navireADeplacer.getCasesNavire()) { 
-					int x = grid1.stringToXY(coord)[0]; 
-					int y = grid1.stringToXY(coord)[1]; 
-					String xyString = grid1.xyToString(x, y-1);
-					if (grid1.estCaseVide(xyString) == false) { 
-						System.out.print("\n\n- !!! Presence d obstacles, Deplacement impossible !!! \n");
-						return false; 
-					}
-					// MODIFICATION DE LA GRILLE 1
-					grid1.setCase("  ", coord);
-					grid1.setCase(symbole, xyString);
-					// STOCKAGE DES NOUVEAUX COORDONNEES DU NAVIRE
-					newCoords.add(xyString);
-				}
-			}
-
-			// DEPLACER VERS LE BAS
-			else if (choice == 1) { 
-				for (String coord: navireADeplacer.getCasesNavire()) { 
-					int x = grid1.stringToXY(coord)[0]; 
-					int y = grid1.stringToXY(coord)[1]; 
-					String xyString = grid1.xyToString(x, y+1);
-					if (grid1.estCaseVide(xyString) == false) { 
-						System.out.print("\n\n- !!! Presence d obstacles, Deplacement impossible !!! \n");
-						return false; 
-					}
-					// MODIFICATION DE LA GRILLE 1
-					grid1.setCase("  ", coord);
-					grid1.setCase(symbole, xyString);
-					// STOCKAGE DES NOUVEAUX COORDONNEES DU NAVIRE
-					newCoords.add(xyString);
-				}
-			}
+		// SI DEPLACEMENT IMPOSSIBLE
+		if (newCoords == null) {
+			return false;
 		}
 
 		// UPDATE DES NOUVELLES COORDONNEES DU NAVIRE DU JOUEUR
@@ -326,15 +255,6 @@ public class Controller {
 
 	// ------------------------ TIR ------------------------ //
 
-	/*Chaque destroyer n’est muni que d’une seule fusée éclairante. Le premier tir d’un destroyer 
-	 * dévoile un carré de 4*4 cases dans la grille adverse à partir du coin haut et gauche. 
-	 * Mais attention, les navires adverses de ce carré ne seront visibles que lors du tour du 
-	 * jeu (quelques secondes)
-	 * , les sous-marins ne peuvent 
-	 *  être coulés que par d’autres sous-marins. Dans ce cas, le navire adverse coulé disparaît et 
-	 *  la case touchée s’affiche sur la grille n° 2.*/
-
-
 
 	// TIRER SUR NAVIRE ENNEMI pensez aux cases libre grid2, les navires coulee disparaissent ---------------------------------
 	public boolean tirerSurNavire(Joueur j, Joueur otherJ, String coord) {
@@ -344,13 +264,14 @@ public class Controller {
 		int indexNavireChoisi = this.trouverNavireAvecCoord(j, coord);
 		Navire navireChoisi = j.getNavires().get(indexNavireChoisi);
 
-		Scanner inn = new Scanner (System.in); 
+		Scanner inTir = new Scanner (System.in); 
 		Grille grid1Ennemy = otherJ.getGrid1();
 		Grille grid2 = j.getGrid2();
 
 		// DEMANDER LES COORDONNEES DE LA CIBLE
 		System.out.print("\nDonner les coordonnees de la cible dans la grille 2: ");
-		String coordCible = inn.nextLine();
+		String coordCible = inTir.nextLine();
+		inTir.close();
 		Navire navireCible = otherJ.getNavires().get(indexNavireChoisi);
 
 		// LES COORDONNEES ONT DEJA ETE RENSEIGNEES
@@ -384,11 +305,97 @@ public class Controller {
 			//grid2.setCase("xx", coordCible);
 		}
 
-		
+
 		if (navireCible.estCoule() == true) {
 
 		}
-
 		return false;
 	}
+
+
+	// ------------------------ DEROULEMENT DE PARTIE ------------------------ //
+
+// gerer choix aleatoire pour ordi dans deplacer et tir
+	public void partie() {
+
+		// DEMANDER LE NOM DES JOUEURS
+		Scanner inPartie = new Scanner (System.in); 
+		System.out.print("\n\n- Nom du joueur qui affronte ORDI : ");
+		String nameJ = inPartie.nextLine();
+		this.setJ1(nameJ);
+
+		// INITIALISATIONS DES GRILLES 1 DES JOUEURS
+		this.DistribuerNavire(this.j1);
+		this.DistribuerNavire(this.j2);
+
+		// INITIALISATIONS DES GRILLES 2 DES JOUEURS
+		this.setGrid2(this.j1, this.j2);
+		Joueur currentJ;
+		Joueur ennemi;
+		int tour = 1;
+		boolean fini = false;
+
+		
+		// DEROULEMENT DES TOURS
+		while (fini != true) {
+			boolean actionEffectuee = false;
+			Scanner inTour = new Scanner (System.in); 
+			currentJ = this.getJoueurAt(tour%2);
+			ennemi = this.getJoueurAt((tour+1)%2);
+
+			// AFFICHAGE DES 2 GRILLES
+			System.out.print("\n\n\n--------------------------------------------------- Tour de " + currentJ.name + " ---------------------------------------------------\n\n\n");
+			this.afficher2Grilles(currentJ, ennemi);
+
+			
+			// GESTION DU TOUR DU JOUEUR
+			if (currentJ.name != "ordi") {
+				// DEMANDER LES COORDONNEES DU NAVIRE DU JOUEUR COURANT
+				System.out.print("\n\n- Choisissez les coordonnees d un navire de la grille 1 : \n\n=> choix : ");
+				String coord = inTour.nextLine();
+
+				// DEMANDER L'ACTION A EFFECTUER
+				int choice;
+				System.out.print("\n\n- Pour Deplacer le navire, taper 1 : \n- Pour Tirer sur un navire ennemi, taper 2 : \n\n=> choix : ");
+				choice = inTour.nextInt();
+
+				if (choice == 1) {
+					actionEffectuee = this.deplacerNavire(currentJ, coord); // si peut pas bouger -> tirer
+				}
+				else if (choice == 2) {
+					this.tirerSurNavire(currentJ, ennemi, coord);
+				}
+			}
+			
+
+			// GESTION DU TOUR DE L ORDINATEUR
+			if (currentJ.name == "ordi") {
+				// CHOIX ALEATOIRE DE LA CASE D UN NAVIRE
+				Random r = new Random();
+				int xR; 
+				int yR;
+				String coordR;
+				do { 
+					xR = r.nextInt(currentJ.getGrid1().nCol);
+					yR = r.nextInt(currentJ.getGrid1().nLine);
+					coordR = currentJ.getGrid1().xyToString(xR, yR);
+				} while (currentJ.getGrid1().estCaseNavire(coordR) == false);
+
+				// ACTION ALEATOIRE
+				int action = r.nextInt(1);
+				if (action == 0) { actionEffectuee = this.deplacerNavire(currentJ, coordR); }
+				if (action == 1) { this.tirerSurNavire(currentJ, ennemi, coordR); }
+			}
+			
+			
+			// PASSAGE AU PROCHAIN TOUR
+			this.afficher2Grilles(currentJ, ennemi);
+			this.afficher2Grilles(currentJ, ennemi);
+			fini = ennemi.estVaincu();
+			System.out.print("\n\n ---------------- TOUR DU PROCHAIN JOUEUR DANS 6 SECONDES ----------------\n");
+			try { TimeUnit.SECONDS.sleep(10); } catch(Exception e) { System.out.println(e); }
+			tour++;	
+		}
+	}
+
 }

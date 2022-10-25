@@ -1,6 +1,8 @@
 package navalBattle;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Collections;
+
 
 public class Grille {
 
@@ -80,6 +82,36 @@ public class Grille {
 
 	public boolean estCaseNavire(String coord) {
 		return this.getCase(coord) != "  " && this.getCase(coord) != "tt";
+	}
+	
+	public int minXCasesNavire(Navire N) {
+		ArrayList<Integer> xTab = new ArrayList<Integer>();
+		for (String coord: N.getCasesNavire()) {
+			int x = stringToXY(coord)[0];
+			xTab.add(x);
+		}
+		return Collections.min(xTab);
+	}
+	
+	public int minYCasesNavire(Navire N) {
+		ArrayList<Integer> yTab = new ArrayList<Integer>();
+		for (String coord: N.getCasesNavire()) {
+			int y = stringToXY(coord)[1];
+			yTab.add(y);
+		}
+		return Collections.min(yTab);
+	}
+	
+	public String coinHautGauche() {
+		for (int x = 0; x < this.nCol; x++) {
+			for (int y = 0; y < this.nLine; y++) {
+				String coord = this.xyToString(x, y);
+				if (this.getCase(coord) == " ") {
+					return coord;
+				}
+			}
+		}
+		return null;
 	}
 }
 
@@ -193,9 +225,10 @@ class Grille1 extends Grille {
 				uneCoord = this.xyToString(x, j);
 				this.setCase(symbole, uneCoord);
 				coords.add(uneCoord);
-				N.addCasesNavire(coord);
+				//N.addCasesNavire(uneCoord);
 			}
 			N.setDisposition("verticale");
+			N.setCasesNavire(coords);
 			return;
 
 		case 1:
@@ -203,9 +236,10 @@ class Grille1 extends Grille {
 				uneCoord = this.xyToString(x, j);		
 				this.setCase(symbole, uneCoord);
 				coords.add(uneCoord);
-				N.addCasesNavire(coord);
+				//N.addCasesNavire(uneCoord);
 			} 
 			N.setDisposition("verticale");
+			N.setCasesNavire(coords);
 			return;
 
 		case 2:
@@ -213,9 +247,10 @@ class Grille1 extends Grille {
 				uneCoord = this.xyToString(i, y);
 				this.setCase(symbole, uneCoord);
 				coords.add(uneCoord);
-				N.addCasesNavire(coord);
+				//N.addCasesNavire(uneCoord);
 			} 
 			N.setDisposition("horizontale");
+			N.setCasesNavire(coords);
 			return;
 			
 		case 3:
@@ -223,9 +258,10 @@ class Grille1 extends Grille {
 				uneCoord = this.xyToString(i, y);
 				this.setCase(symbole, uneCoord);
 				coords.add(uneCoord);
-				N.addCasesNavire(coord);
+				//N.addCasesNavire(uneCoord);
 			} 
 			N.setDisposition("horizontale");
+			N.setCasesNavire(coords);
 			return;
 		}		
 	}

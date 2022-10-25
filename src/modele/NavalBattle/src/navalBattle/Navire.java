@@ -7,7 +7,7 @@ public class Navire {
 	int taille;
 	int puissance; 
 	String symbole;
-	String disposition; // horizontale ou verticale
+	String disposition;
 	
 	private ArrayList<String> cases;
 	private ArrayList<String> casesTouchees;
@@ -50,14 +50,17 @@ public class Navire {
 	// ------------------------ METHODS ------------------------ //
 	
 	
-	public boolean estCoule() { return this.taille == this.casesTouchees.size(); }
+	public boolean estCoule() { 
+		if (this.casesTouchees == null) {
+			return false;
+		}
+		return this.taille == this.casesTouchees.size(); 
+	}
 	
 	public boolean estDestroyer() { return false; }
 	
 	public boolean estSousMarin() { return false; }
-	
-	public void addCasesNavire(String coord) { this.cases.add(coord); }
-	
+		
 	public void addCasesTouchees(String coord) { this.casesTouchees.add(coord); }
 	
 	public boolean getPremierTirEffectue() { return false;}
