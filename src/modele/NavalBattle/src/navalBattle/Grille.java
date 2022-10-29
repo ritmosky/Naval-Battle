@@ -80,6 +80,10 @@ public class Grille {
 		return this.getCase(coord) == "xx";
 	}
 
+	public boolean estCaseTouchee(String coord) {
+		return this.getCase(coord) == "xx" || this.getCase(coord) == "tt";
+	}
+	
 	public boolean estCaseNavire(String coord) {
 		return this.getCase(coord) != "  " && this.getCase(coord) != "tt";
 	}

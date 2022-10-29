@@ -53,112 +53,99 @@ public class Joueur {
 	public ArrayList<String> deplacerAGauche(Navire N) {
 		ArrayList<String> newCoords = new ArrayList<String>();
 		String symbole = N.symbole;
-		int minX = this.getGrid1().minXCasesNavire(N);
-
-		for (String coord: N.getCasesNavire()) { 
-			int x = grid1.stringToXY(coord)[0]; 
-			int y = grid1.stringToXY(coord)[1]; 
+		String uneCoord = N.getCasesNavire().get(0);
+		int xMin = this.getGrid1().minXCasesNavire(N);
+		int y = this.getGrid1().stringToXY(uneCoord)[1];
+		String coordTest = this.getGrid1().xyToString(xMin - 1, y);
+		
+		// SI ON SORT DU CADRE OU SI IL Y A UN OBSTACLE
+		if (xMin - 1 < 0 || this.getGrid1().estCaseVide(coordTest) == false) { return null; }
 			
-			if (x-1 < 0) { return null; }
-			
-			String xyString = grid1.xyToString(x-1, y);
+		int xMax = xMin + N.taille - 1;
+		String coordMax = this.getGrid1().xyToString(xMax, y);
+		this.getGrid1().setCase("  ", coordMax);
 
-			if (this.getGrid1().estCaseVide(xyString) == false && x < minX) { 
-				System.out.print("\n\n- !!! Presence d obstacles, Deplacement impossible !!! \n");
-				return null; 
-			}
-			// MODIFICATION DE LA GRILLE 1
-			this.grid1.setCase("  ", coord);
-			this.grid1.setCase(symbole, xyString);
-			// STOCKAGE DES NOUVEAUX COORDONNEES DU NAVIRE
-			newCoords.add(xyString);
+		for (int i = xMin - 1; i < xMax; i++) {
+			String newCoord = this.getGrid1().xyToString(i, y);
+			this.getGrid1().setCase(symbole, newCoord);
 		}
 		return newCoords;
 	}
 
+	
 	public ArrayList<String> deplacerADroite(Navire N) {
-		ArrayList<String> newCoords = new ArrayList<String>();
+		ArrayList<String> newCoordsArray = new ArrayList<String>();
 		String symbole = N.symbole;
-		int minX = this.getGrid1().minXCasesNavire(N);
-
-		for (String coord: N.getCasesNavire()) { 
-			int x = grid1.stringToXY(coord)[0]; 
-			int y = grid1.stringToXY(coord)[1]; 
+		String uneCoord = N.getCasesNavire().get(0);
+		int xMin = this.getGrid1().minXCasesNavire(N);
+		int y = this.getGrid1().stringToXY(uneCoord)[1];
+		int xMax = xMin + N.taille - 1;
+		String coordTest = this.getGrid1().xyToString(xMax + 1, y);
+		
+		// SI ON SORT DU CADRE OU SI IL Y A UN OBSTACLE
+		if (xMax + 1 > this.getGrid1().nCol - 1 || this.getGrid1().estCaseVide(coordTest) == false) { return null; }
 			
-			if (x+1 > this.getGrid1().nCol-1) { return null; }
-			
-			String xyString = grid1.xyToString(x+1, y);
-
-			if (this.getGrid1().estCaseVide(xyString) == false && x > minX + N.taille - 1) { 
-				System.out.print("\n\n- !!! Presence d obstacles, Deplacement impossible !!! \n");
-				return null; 
-			}
-			// MODIFICATION DE LA GRILLE 1
-			this.grid1.setCase("  ", coord);
-			this.grid1.setCase(symbole, xyString);
-			// STOCKAGE DES NOUVEAUX COORDONNEES DU NAVIRE
-			newCoords.add(xyString);
+		String coordMin = this.getGrid1().xyToString(xMin, y);
+		this.getGrid1().setCase("  ", coordMin);
+		
+		for (int i = xMin + 1; i <= xMax + 1; i++) {
+			String newCoord = this.getGrid1().xyToString(i, y);
+			this.getGrid1().setCase(symbole, newCoord);
+			newCoordsArray.add(newCoord);
 		}
-		return newCoords;
+		return newCoordsArray;
 	}
 
 
 	public ArrayList<String> deplacerEnHaut(Navire N) {
-		ArrayList<String> newCoords = new ArrayList<String>();
+		ArrayList<String> newCoordsArray = new ArrayList<String>();
 		String symbole = N.symbole;
-		int minY = this.getGrid1().minYCasesNavire(N);
-
-		for (String coord: N.getCasesNavire()) { 
-			int x = grid1.stringToXY(coord)[0]; 
-			int y = grid1.stringToXY(coord)[1]; 
+		String uneCoord = N.getCasesNavire().get(0);
+		int yMin = this.getGrid1().minYCasesNavire(N);
+		int x = this.getGrid1().stringToXY(uneCoord)[0];
+		String coordTest = this.getGrid1().xyToString(x, yMin - 1);
+		
+		// SI ON SORT DU CADRE OU SI IL Y A UN OBSTACLE
+		if (yMin - 1 < 0 || this.getGrid1().estCaseVide(coordTest) == false) { return null; }
 			
-			if (y-1 < 0) { return null; }
-			
-			String xyString = grid1.xyToString(x, y-1);
-			
-			if (this.getGrid1().estCaseVide(xyString) == false && y < minY) { 
-				System.out.print("\n\n- !!! Presence d obstacles, Deplacement impossible !!! \n");
-				return null; 
-			}
-			// MODIFICATION DE LA GRILLE 1
-			this.grid1.setCase("  ", coord);
-			this.grid1.setCase(symbole, xyString);
-			// STOCKAGE DES NOUVEAUX COORDONNEES DU NAVIRE
-			newCoords.add(xyString);
+		int yMax = yMin + N.taille - 1;
+		String coordMax = this.getGrid1().xyToString(x, yMax);
+		this.getGrid1().setCase("  ", coordMax);
+		
+		for (int j = yMin - 1; j < yMax; j++) {
+			String newCoord = this.getGrid1().xyToString(x, j);
+			this.getGrid1().setCase(symbole, newCoord);
+			newCoordsArray.add(newCoord);
 		}
-		return newCoords;
+		return newCoordsArray;
 	}
 
 
 	public ArrayList<String> deplacerEnBas(Navire N) {
-		ArrayList<String> newCoords = new ArrayList<String>();
+		ArrayList<String> newCoordsArray = new ArrayList<String>();
 		String symbole = N.symbole;
-		int minY = this.getGrid1().minYCasesNavire(N);
-
-		for (String coord: N.getCasesNavire()) { 
-			int x = grid1.stringToXY(coord)[0]; 
-			int y = grid1.stringToXY(coord)[1]; 
+		String uneCoord = N.getCasesNavire().get(0);
+		int yMin = this.getGrid1().minYCasesNavire(N);
+		int x = this.getGrid1().stringToXY(uneCoord)[0];
+		int yMax = yMin + N.taille - 1;
+		String coordTest = this.getGrid1().xyToString(x, yMax + 1);
+		
+		// SI ON SORT DU CADRE OU SI IL Y A UN OBSTACLE
+		if (yMax + 1 > this.getGrid1().nLine - 1 || this.getGrid1().estCaseVide(coordTest) == false) { return null; }
 			
-			if (y+1 > this.getGrid1().nLine-1) { return null; }
-			
-			String xyString = grid1.xyToString(x, y+1);
-
-			if (this.getGrid1().estCaseVide(xyString) == false && y > minY + N.taille - 1) { 
-				System.out.print("\n\n- !!! Presence d obstacles, Deplacement impossible !!! \n");
-				return null; 
-			}
-			// MODIFICATION DE LA GRILLE 1
-			this.grid1.setCase("  ", coord);
-			this.grid1.setCase(symbole, xyString);
-			// STOCKAGE DES NOUVEAUX COORDONNEES DU NAVIRE
-			newCoords.add(xyString);
+		String coordMin = this.getGrid1().xyToString(x, yMin);
+		this.getGrid1().setCase("  ", coordMin);
+		
+		for (int j = yMin+1; j <= yMax + 1; j++) {
+			String newCoord = this.getGrid1().xyToString(x, j);
+			this.getGrid1().setCase(symbole, newCoord);
+			newCoordsArray.add(newCoord);
 		}
-		return newCoords;
+		return newCoordsArray;
 	}
 
 
 	public ArrayList<String> deplacer(Navire N, int sens) {
-		
 		switch(sens) {
 		case 0:
 			return deplacerEnHaut(N);
