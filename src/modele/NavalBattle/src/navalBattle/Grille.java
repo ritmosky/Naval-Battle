@@ -75,7 +75,6 @@ public class Grille {
 	public boolean estCaseVideTouchee(String coord) {
 		return this.getCase(coord) == "tt";
 	}
-
 	public boolean estCaseNavireTouchee(String coord) {
 		return this.getCase(coord) == "xx";
 	}
@@ -285,7 +284,7 @@ class Grille2 extends Grille {
 
 
 	public String masquerCase(String coord) {
-		if (this.estCaseNavire(coord) == true) { 
+		if (this.estCaseVide(coord) == false && this.estCaseNavireTouchee(coord) == false && this.estCaseVideTouchee(coord) == false) { 
 			return "  ";
 		}
 		return this.getCase(coord);
