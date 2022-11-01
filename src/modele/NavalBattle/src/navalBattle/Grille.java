@@ -203,14 +203,15 @@ class Grille1 extends Grille {
 	// 2 = DE LA DROITE VERS LA GAUCHE, 3 = DE LA GAUCHE VERS LA DROITE
 	
 	public void placerNavire(Navire N) {
-		Random r = new Random();
 		String symbole = N.symbole;
+		String coord;
 		int tailleNavire = N.taille;
 		int sensPlacement; 
 		int x; 
 		int y;
-		String coord;
 
+		// CAS D UNE NOUVELLE PARTIE
+		Random r = new Random();
 		do { 
 			x = r.nextInt(this.nCol);
 			y = r.nextInt(this.nLine);
@@ -228,7 +229,6 @@ class Grille1 extends Grille {
 				uneCoord = this.xyToString(x, j);
 				this.setCase(symbole, uneCoord);
 				coords.add(uneCoord);
-				//N.addCasesNavire(uneCoord);
 			}
 			N.setDisposition("verticale");
 			N.setCasesNavire(coords);
@@ -239,7 +239,6 @@ class Grille1 extends Grille {
 				uneCoord = this.xyToString(x, j);		
 				this.setCase(symbole, uneCoord);
 				coords.add(uneCoord);
-				//N.addCasesNavire(uneCoord);
 			} 
 			N.setDisposition("verticale");
 			N.setCasesNavire(coords);
@@ -250,7 +249,6 @@ class Grille1 extends Grille {
 				uneCoord = this.xyToString(i, y);
 				this.setCase(symbole, uneCoord);
 				coords.add(uneCoord);
-				//N.addCasesNavire(uneCoord);
 			} 
 			N.setDisposition("horizontale");
 			N.setCasesNavire(coords);
@@ -261,7 +259,6 @@ class Grille1 extends Grille {
 				uneCoord = this.xyToString(i, y);
 				this.setCase(symbole, uneCoord);
 				coords.add(uneCoord);
-				//N.addCasesNavire(uneCoord);
 			} 
 			N.setDisposition("horizontale");
 			N.setCasesNavire(coords);

@@ -8,6 +8,7 @@ public class Navire {
 	int puissance; 
 	String symbole;
 	String disposition;
+	String name;
 	
 	private ArrayList<String> cases;
 	private ArrayList<String> casesTouchees;
@@ -47,6 +48,8 @@ public class Navire {
 	
 	public void setCasesNavire(ArrayList<String> newcases) { this.cases = newcases; }
 	
+	public void setCasesNavireTouchees(ArrayList<String> newcases) { this.casesTouchees = newcases; }
+	
 	// ------------------------ METHODS ------------------------ //
 	
 	
@@ -81,6 +84,7 @@ class Cuirasse extends Navire {
 		this.taille = Integer.parseInt(Controller.CUIRASSE.get("taille"));
 		this.puissance = Integer.parseInt(Controller.CUIRASSE.get("puissance"));
 		this.symbole = Controller.CUIRASSE.get("symbole");
+		this.name = "CUIRASSE";
 	}
 }
 
@@ -97,6 +101,7 @@ class Croiseur extends Navire {
 		this.taille = Integer.parseInt(Controller.CROISEUR.get("taille"));
 		this.puissance = Integer.parseInt(Controller.CROISEUR.get("puissance"));
 		this.symbole = Controller.CROISEUR.get("symbole");
+		this.name = "CROISEUR";
 	}
 }
 
@@ -116,6 +121,7 @@ class Destroyer extends Navire {
 		this.puissance = Integer.parseInt(Controller.DESTROYER.get("puissance"));
 		this.symbole = Controller.DESTROYER.get("symbole");
 		this.premierTirEffectue = false;
+		this.name = "DESTROYER";
 	}
 	
 	
@@ -145,6 +151,7 @@ class SousMarin extends Navire {
 		this.taille = Integer.parseInt(Controller.SOUSMARIN.get("taille"));
 		this.puissance = Integer.parseInt(Controller.SOUSMARIN.get("puissance"));
 		this.symbole = Controller.SOUSMARIN.get("symbole");
+		this.name = "SOUSMARIN";
 	}
 	
 	

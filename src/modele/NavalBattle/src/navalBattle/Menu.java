@@ -18,17 +18,17 @@ public class Menu {
 			System.out.print(" ------------------------------------------------\n\n choice => ");
 			
 			choice = in1.nextLine();
-
+			Controller controller = new Controller();
 			switch(choice) {
 			
 			case "1": 
 				System.out.println("\n --------------------- Debuter une partie ---------------------");
-				Controller controller = new Controller();
-				controller.partie();
+				controller.partie(false);
 				continue;
 				
 			case "2": 
 				System.out.println("\n --------------------- Charger une partie ---------------------");
+				controller.chargerPartie();
 				continue;
 				
 			case "3": 
