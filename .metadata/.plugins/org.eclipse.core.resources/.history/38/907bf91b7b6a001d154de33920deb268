@@ -1,0 +1,11 @@
+package modele;
+
+public class SousMarin extends Navire {
+	SousMarin (int t, int p, String s){
+		super(t,p,s);
+		this.name = "SOUSMARIN";
+	}
+
+	@Override
+	public boolean estSousMarin() { return true; }
+}

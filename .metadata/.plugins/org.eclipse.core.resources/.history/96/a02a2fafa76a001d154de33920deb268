@@ -1,0 +1,34 @@
+package view;
+import javax.swing.*;
+import java.awt.*;
+
+
+public class vuePlateau extends JFrame{
+ 
+	public vuePlateau(){
+		super();
+ 
+		initFenetre();
+	}
+ 
+	private void initFenetre(){
+		setTitle("NAVAL BATTLE");
+		setSize(320,240);
+		setLocationRelativeTo(null); 
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+		setContentPane(buildContentPane());
+	}
+	
+	
+	private JPanel buildContentPane(){
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout());
+	 
+		JLabel label = new JLabel("Bienvenue dans ma modeste application");
+	 
+		panel.add(label);
+	 
+		return panel;
+	}
+
+}

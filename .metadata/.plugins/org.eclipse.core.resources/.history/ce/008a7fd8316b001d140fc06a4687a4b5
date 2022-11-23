@@ -1,0 +1,38 @@
+package view;
+import javax.swing.*;
+import java.awt.*;
+
+
+public class vuePlateau extends JFrame{
+ 
+	public vuePlateau(){
+		super();
+		initFenetre();
+	}
+ 
+	private void initFenetre(){
+		this.setTitle("NAVAL BATTLE");
+		this.setSize(300,300);
+		this.setLocationRelativeTo(null); 
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+		this.setContentPane(buildContentPane());
+		//this.setLayout(new GridLayout(15,15));
+	}
+	
+	
+	private JPanel buildContentPane(){
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		
+		JLabel labelGrille1 = new JLabel("GRILLE 1");
+		panel.add(labelGrille1);
+		
+		panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		JLabel labelGrille2 = new JLabel("GRILLE 2");
+		panel.add(labelGrille2);
+		
+		return panel;
+	}
+
+
+}

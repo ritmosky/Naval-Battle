@@ -1,0 +1,20 @@
+package view;
+
+import javax.swing.*;
+
+public class vueCase {
+	
+    private JButton button;
+    private final int x;
+    private final int y;
+    protected int valeur;
+ 
+    public vueCase(int x0, int y0){
+        x=x0;
+        y=y0;
+        button = new JButton("0");
+    }
+    
+    public JButton getButton () { return button;}
+ 
+}

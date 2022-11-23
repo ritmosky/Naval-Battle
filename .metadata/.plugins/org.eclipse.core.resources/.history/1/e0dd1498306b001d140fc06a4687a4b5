@@ -1,0 +1,36 @@
+package view;
+import java.awt.*;
+import javax.swing.*;    
+import modele.*;
+
+
+public class vueGrille extends JFrame {
+	JFrame frame; 
+
+	public vueGrille(/*Grille grid,*/ int l, int c) {
+		super();
+		frame.setLayout(new GridLayout(l,c));
+		frame.setSize(300, 300);  
+		frame.setVisible(true); 
+		
+		for (int i= 0; i< l; i++) {
+			for (int j= 0; j< c; j++) {
+				//String coord = grid.xyToString(l,c);
+				//String symb = grid.getCase(coord);
+				//frame.add(new Button(symb));
+				
+				frame.add(new Button("2"));
+			}
+		}
+	}
+	
+	public static void main(String[] args){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				vueGrille fenetre = new vueGrille(15,15);
+				fenetre.setVisible(true);
+			}
+		});
+	}
+
+}

@@ -1,0 +1,40 @@
+package view;
+import java.awt.*;
+import java.util.ArrayList;
+import javax.swing.*;
+
+
+public class vueJeu {
+    private JPanel affichage;
+    
+    public vueJeu(){
+		
+        JPanel grille = new JPanel();
+        affichage = new JPanel();
+        affichage.setLayout(new BorderLayout());
+        ArrayList<vueCase> listecases = new ArrayList();
+       grille = new JPanel();
+        grille.setLayout(new GridLayout(11,11));
+        for(int i=0;i<11;i++){
+            for(int j=0;j<11;j++){
+            	vueCase lacase = new vueCase(i,j);
+            	listecases.add(lacase); // on ajoute une instance de Case dans la liste
+            	grille.add(lacase.getButton()); // par exemple, si tu ajoutes une méthode JButton getButton() dans Case, qui fait return button
+            }       
+        }
+    }
+	
+    
+	public static void main(String[] args){
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				vueJeu fenetre = new vueJeu();
+				fenetre.setVisible(true);
+			}
+		});
+	}
+
+}
+
+
+

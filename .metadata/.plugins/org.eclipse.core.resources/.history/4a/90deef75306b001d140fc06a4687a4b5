@@ -1,0 +1,10 @@
+package view;
+import modele.*;
+
+
+public class vueCase {
+	int x;
+	int y;
+	
+	
+}

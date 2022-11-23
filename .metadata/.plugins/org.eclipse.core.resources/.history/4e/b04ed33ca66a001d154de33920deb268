@@ -1,0 +1,20 @@
+package view;
+import javax.swing.JFrame;
+
+
+public class vuePlateau extends JFrame{
+ 
+	public vuePlateau(){
+		super();
+ 
+		initFenetre();
+	}
+ 
+	private void initFenetre(){
+		setTitle("NAVAL BATTLE");
+		setSize(320,240);
+		setLocationRelativeTo(null); 
+		setResizable(false); 
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+	}
+}
