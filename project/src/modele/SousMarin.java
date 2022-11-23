@@ -1,0 +1,8 @@
+package modele;
+
+public class SousMarin extends Navire {
+	public SousMarin (int t, int p, String s){
+		super(t,p,s);
+		this.name = "SOUSMARIN";
+	}
+}
