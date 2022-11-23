@@ -1,8 +1,8 @@
-package navalBattle;
+package controller;
 import java.util.Scanner;
 
 
-public class Menu {
+public class MainMenu {
 
 	
 	public void affichage() {
@@ -48,7 +48,7 @@ public class Menu {
 	
 	
 	public static void main(String[] args) {
-		Menu menu = new Menu();
+		MainMenu menu = new MainMenu();
 		menu.affichage();
 		System.out.println("\n --------------------- !!! MERCI !!! --------------------- \n");
 
