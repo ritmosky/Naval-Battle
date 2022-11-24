@@ -27,14 +27,14 @@ public class Controller {
 	Joueur j2;
 
 
-	public HashMap<String, String> CUIRASSE = new HashMap<String, String>() {{
+	final HashMap<String, String> CUIRASSE = new HashMap<String, String>() {{
 		put("puissance", "9");
 		put("taille", "7");
 		put("symbole", "**");
 		put("nombre", "1");
 	}};
 
-	public final HashMap<String, String> CROISEUR = new HashMap<String, String>() {{
+	final HashMap<String, String> CROISEUR = new HashMap<String, String>() {{
 		put("puissance", "4");
 		put("taille", "5");
 		put("symbole", "oo");
