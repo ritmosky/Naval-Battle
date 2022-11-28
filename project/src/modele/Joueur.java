@@ -8,10 +8,12 @@ public class Joueur {
 	private Grille1 grid1;
 	private Grille2 grid2;
 	private ArrayList<Navire> navires;
+	private ArrayList<String> casesNaviresTouches;
 
 	public Joueur (String s, String alpha, int l, int c){
 		this.name = s;
 		this.navires = new ArrayList<Navire>();
+		this.casesNaviresTouches = new ArrayList<String>(); 
 		this.grid1 = new Grille1(alpha, l, c);
 		this.grid2 = new Grille2(alpha, l, c);
 	} 
@@ -26,8 +28,30 @@ public class Joueur {
 	public void addNavire(Navire n) { this.navires.add(n); }
 	
 	public String getName() { return this.name; }
+	
+	public ArrayList<String> getCasesNaviresTouches() { return this.casesNaviresTouches; }
+	
+	public void addCasesNaviresTouches(String c, int indNavire) { 
+		this.casesNaviresTouches.add(c); 
+		if (this.casesNaviresTouches.contains(c) == true) {
+			this.getNavires().get(indNavire).addCasesTouchees(c);}
+	}
 
-
+	public ArrayList<Integer> getIndNavireCoule() {
+		ArrayList<Integer> l = new ArrayList<Integer>();
+		int i = 0;
+		for (Navire N: this.getNavires()) {
+			if (N.estCoule() == true) { l.add(i); }
+			i++;
+		}
+		return l;
+	}
+	
+	public boolean gotNavireCoule() {
+		return this.getIndNavireCoule().size() != 0;
+	}
+	
+	
 	public boolean estVaincu() {
 		for (Navire N: this.getNavires()) {
 			if (N.estCoule() == false) { return false; }

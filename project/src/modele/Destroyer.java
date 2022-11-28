@@ -2,16 +2,15 @@ package modele;
 
 public class Destroyer extends Navire {
 	
-	boolean premierTirEffectue;
+	boolean fusee;
 
 	public Destroyer (int t, int p, String s){
 		super(t,p,s);
+		this.fusee = false;
 		this.name = "DESTROYER";
 	}
-	
 	@Override
-	public void premierTir() { this.premierTirEffectue = true; }
-	
+	public void tirFusee() { this.fusee = true; }
 	@Override
-	public boolean getPremierTirEffectue() { return this.premierTirEffectue; }
+	public boolean getTirFusee() { return this.fusee; }
 }

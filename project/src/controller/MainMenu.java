@@ -2,49 +2,42 @@ package controller;
 import java.util.Scanner;
 
 
-public class MainMenu {
 
+public class MainMenu {
 	
 	public void affichage() {
 		Scanner in1 = new Scanner (System.in);	
 		String choice = "";
 
 		while (choice != "q") {
-			System.out.println("\n\n --------------------- MENU ---------------------\n");
-			System.out.println("  1. Pour Jouer une partie: TAPEZ 1");
-			System.out.println("  2. Pour Charger une partie: TAPEZ 2");
-			System.out.println("  3. Pour afficher l Aide: TAPEZ 3");
-			System.out.println("  3. Pour Quitter et Sauvegarder: TAPEZ q \n");
-			System.out.print(" ------------------------------------------------\n\n choice => ");
+			System.out.println("\n\n   ------------------- MENU -------------------\n");
+			System.out.println("\t ---------------------------------");
+			System.out.println("\t|   1. NOUVELLE PARTIE, TAPEZ 1   |");
+			System.out.println("\t|   2. CHARGER PARTIE,  TAPEZ 2   |");
+			System.out.println("\t|   3. AFFICHER AIDE,   TAPEZ 3   |");
+			System.out.print("\t ---------------------------------\n\n CHOIX => ");
 			
 			choice = in1.nextLine();
 			Controller controller = new Controller();
 			switch(choice) {
-			
 			case "1": 
-				System.out.println("\n --------------------- Debuter une partie ---------------------");
+				System.out.println("\n --------------------- NOUVELLE PARTIE ---------------------");
 				controller.partie(false);
-				continue;
-				
+				continue;		
 			case "2": 
-				System.out.println("\n --------------------- Charger une partie ---------------------");
+				System.out.println("\n --------------------- CHARGER PARTIE ---------------------");
 				controller.chargerPartie();
 				continue;
-				
 			case "3": 
-				System.out.println("\n --------------------- Afficher une aide ---------------------");
-				continue;
-				
+				System.out.println("\n --------------------- AFFICHER AIDE ---------------------");
+				continue;	
 			case "q": 
-				System.out.println("\n --------------------- !!! FIN, MERCI !!! --------------------- \n");
-				break;	
+				System.out.println("\n --------------------- FIN --------------------- \n");
+				System.exit(0);;	
 			}
-			
 		}
-		
 		in1.close();
 	}
-	
 	
 	
 	public static void main(String[] args) {
@@ -53,5 +46,4 @@ public class MainMenu {
 		System.out.println("\n --------------------- !!! MERCI !!! --------------------- \n");
 
 	}
-
 }
