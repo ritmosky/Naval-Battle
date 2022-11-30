@@ -19,7 +19,7 @@ public class MainMenu {
 			
 			choice = in1.nextLine();
 			Controller controller = new Controller();
-			switch(choice) {
+			switch(choice) { 
 			case "1": 
 				System.out.println("\n --------------------- NOUVELLE PARTIE ---------------------");
 				controller.partie(false);
@@ -43,7 +43,6 @@ public class MainMenu {
 	public static void main(String[] args) {
 		MainMenu menu = new MainMenu();
 		menu.affichage();
-		System.out.println("\n --------------------- !!! MERCI !!! --------------------- \n");
-
+		
 	}
 }

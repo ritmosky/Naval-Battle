@@ -23,6 +23,7 @@ public class Controller {
 	String alph = "abcdefghijklmnopqrstuvwxyz";
 	Joueur j1; 
 	Joueur j2;
+	Joueur currentj;
 	
 	final HashMap<String, String> CUIRASSE = new HashMap<String, String>() {{
 		put("puissance", "9");
@@ -63,11 +64,16 @@ public class Controller {
 		put("  ", "\033[0;37m"); // blanc
 	}};
 	
-	Controller() {
-		this.j1 = new Joueur("joueur", this.alph.substring(0, this.nLine), this.nLine, this.nCol);
+	public Controller() {
+		this.j1 = new Joueur("JOUEUR", this.alph.substring(0, this.nLine), this.nLine, this.nCol);
 		this.j2 = new Joueur("ordi", this.alph.substring(0, this.nLine), this.nLine, this.nCol);
+		this.currentj = this.j1;
 	};
 
+	public Joueur getCurrentJ() { return this.currentj; }
+	public Joueur getJ1() { return this.j1; }
+	public Joueur getJ2() { return this.j2; }
+	
 	public Joueur getJoueurAt(int p) {
 		if (p == 0) { return this.j2; }
 		return this.j1;
@@ -171,9 +177,11 @@ public class Controller {
 				String coord = Character.toString(y) + j;
 				String coul = COULEUR.get(grid2CurrentJ.getCase(coord));
 				if (casesEclairees != null && casesEclairees.contains(coord)) { //////////////////////////////
-					if (grid2CurrentJ.getCase(coord) != "  ") {System.out.print("\033[40m" + grid2CurrentJ.masquerCase(coord) + "\033[0m");}
+					//System.out.print(coul + grid2CurrentJ.getCase(coord) + "\033[0m"); "\u001B[45m"
+					if (grid2CurrentJ.getCase(coord) == "  ") {System.out.print("\u001B[45m" + "  " + "\033[0m");}
+					if (grid2CurrentJ.getCase(coord) != "  ") {System.out.print("\u001B[45m" + "ff" + "\033[0m");}
 				}
-				else { System.out.print(grid2CurrentJ.getCase(coord));}
+				else { System.out.print(coul + grid2CurrentJ.getCase(coord) + "\033[0m");	}
 				System.out.print("|");		
 			}
 			System.out.print("\n");
@@ -318,25 +326,24 @@ public class Controller {
 		int[] tabxy = grid2.stringToXY(coordCible); 
 		if (grid2.estCaseNavire(coordCible) == false) { grid1Ennemy.setCase("tt", coordCible);}
 		if (grid2.estCaseNavire(coordCible) == true) { grid1Ennemy.setCase("xx", coordCible); b = true;}
-
 		for (int x= tabxy[0]-1; x<= tabxy[0]+1; x++) {
 			if (pssc<0) { break;}
-			for (int y= tabxy[1]-1; y<= tabxy[1]+1; y++) {
-				pssc--;
-				if (pssc<0) { break;}
-				if (x<0 || y<0 || y>=this.nLine || x>=this.nCol) { continue; }
-				String c = grid2.xyToString(x, y);
-				if (c != coordCible) {
-					int indN = this.trouverNavireAvecCoord(ennemy, c);
-					if (indN > -1) { ennemy.addCasesNaviresTouches(c, indN); }
-					if (grid2.estCaseNavire(c) == false) { grid1Ennemy.setCase("tt", c);}
-					if (grid2.estCaseNavire(c) == true) { grid1Ennemy.setCase("xx", c); b = true;}
+			else if (j.getNavires().get(indexNavireChoisi).getName() != "DESTROYER") {
+				for (int y= tabxy[1]-1; y<= tabxy[1]+1; y++) {
+					if (pssc<0) { break;}
+					if (x<0 || y<0 || y>=this.nLine || x>=this.nCol) { continue; }
+					String c = grid2.xyToString(x, y);
+					if (c != coordCible) {
+						int indN = this.trouverNavireAvecCoord(ennemy, c);
+						if (indN > -1) { ennemy.addCasesNaviresTouches(c, indN); }
+						if (grid2.estCaseNavire(c) == false) { grid1Ennemy.setCase("tt", c);}
+						if (grid2.estCaseNavire(c) == true) { grid1Ennemy.setCase("xx", c); b = true;}
+					}
 				}
-
 			}
 		}
 
-		// PREMIER TIR DU DESTROYER ------------------------------------
+		// PREMIER TIR DU DESTROYER ------------------------------------ //////////////////////////////////////////////////::
 		ArrayList<String> casesEclairees = new ArrayList<>();
 		if (j.getNavires().get(indexNavireChoisi).getName() == "DESTROYER" && j.getNavires().get(indexNavireChoisi).getTirFusee() == false) {
 			for (int x= tabxy[0]; x< tabxy[0]+4; x++) {
@@ -379,6 +386,7 @@ public class Controller {
 			boolean actionEffectuee = false;
 			currentJ = this.getJoueurAt(tour%2);
 			ennemi = this.getJoueurAt((tour+1)%2);
+			this.currentj = currentJ;
 
 			// AFFICHAGE DES 2 GRILLES
 			System.out.print("\n\n--------------------------------------------------- TOUR DE " + currentJ.getName());

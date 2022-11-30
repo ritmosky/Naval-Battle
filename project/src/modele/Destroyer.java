@@ -9,6 +9,7 @@ public class Destroyer extends Navire {
 		this.fusee = false;
 		this.name = "DESTROYER";
 	}
+	
 	@Override
 	public void tirFusee() { this.fusee = true; }
 	@Override
