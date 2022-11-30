@@ -29,6 +29,17 @@ public class Grille {
 		return this.cases[x][y];
 	}
 	
+	public ArrayList<String> getCaseTouche() {
+		ArrayList<String> l = new ArrayList<>();
+		for (int i= 0; i< nLine; i++) {
+			for (int j=0; j< nCol; j++) {
+				String c = this.xyToString(i, j);
+				if (this.estCaseVideTouchee(c)) { l.add(c); }
+			}
+		}
+		return l;
+	}
+	
 	public String[][] getCases() { return this.cases; }
 	
 	public String getAlphaCol() { return this.alphCol; }
@@ -81,17 +92,5 @@ public class Grille {
 			yTab.add(y);
 		}
 		return Collections.min(yTab);
-	}
-	
-	public String coinHautGauche() {
-		for (int x = 0; x < this.nCol; x++) {
-			for (int y = 0; y < this.nLine; y++) {
-				String coord = this.xyToString(x, y);
-				if (this.getCase(coord) == " ") {
-					return coord;
-				}
-			}
-		}
-		return null;
 	}
 }

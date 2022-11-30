@@ -21,7 +21,6 @@ public class Navire {
 		this.casesTouchees = new ArrayList<String>();
 	}
 	
-		
 	public ArrayList<String> getCasesNavire() { return this.cases; }
 	
 	public ArrayList<String> getCasesTouchees() { return this.casesTouchees; }
@@ -29,6 +28,8 @@ public class Navire {
 	public void setDisposition(String disposition) { this.disposition = disposition; }
 	
 	public String getDisposition() { return this.disposition; }
+	
+	public int getPuissance() { return this.puissance; }
 	
 	public String getSymbole() { return this.symbole; }
 	
@@ -38,8 +39,6 @@ public class Navire {
 	
 	public void setCasesNavireTouchees(ArrayList<String> newcases) { this.casesTouchees = newcases; }
 	
-	
-	
 	public boolean estCoule() { 
 		if (this.casesTouchees == null) {
 			return false;
@@ -48,8 +47,6 @@ public class Navire {
 	}
 				
 	public void addCasesTouchees(String coord) { this.casesTouchees.add(coord); }
-	
-	public boolean getPremierTirEffectue() { return false;}
-	
-	public void premierTir() {}
+	public void tirFusee() {}
+	public boolean getTirFusee() { return false;}
 }
