@@ -448,7 +448,8 @@ public class Controller {
 				String coord = "";
 				do {
 					System.out.print("\n\n- NAVIRE A UTILISER DANS GRILLE 1 : \nCHOIX => ");
-					coord = inCoord.nextLine();
+					Scanner innCoord = new Scanner (System.in); 
+					coord = innCoord.nextLine();
 		  			indNavire = this.trouverNavireAvecCoord(currentJ, coord);
 				} while(indNavire < 0);
 				// DEMANDER L'ACTION A EFFECTUER
@@ -473,7 +474,7 @@ public class Controller {
 			fini = this.nbCaseNavire == ennemi.getCasesNaviresTouches().size();
 			System.out.println("\nNB CASE COULE ENNEMI = "+ ennemi.getCasesNaviresTouches().size() + "/" + this.nbCaseNavire);
 			if (fini == true) {
-				System.out.println("\n !!! FIN DE LA PARTIE, " + currentJ.getName() + "GAGNE !!! ");
+				System.out.println("\n !!! FIN DE LA PARTIE, " + currentJ.getName() + " GAGNE !!! ");
 				System.exit(0);
 			}
 			if (currentJ.getName()!="ordi") {for (int i = 1; i < 5; i++) {
@@ -567,14 +568,17 @@ public class Controller {
 					this.j1.addNavire(N);
 					String symbole = N.getSymbole();
 					for (String c: N.getCasesNavire()) {
-						if (N.getCasesTouchees().contains(c)) { this.j1.getGrid1().setCase("xx", c); }
+						if (N.getCasesTouchees().contains(c)) { 
+							this.j1.getGrid1().setCase("xx", c);
+							int indN = this.trouverNavireAvecCoord(this.j1, c);
+							this.j1.addCasesNaviresTouches(c, indN);
+						}
 						else { this.j1.getGrid1().setCase(symbole, c); }
 					}
 				}
 
 			} catch (FileNotFoundException e) { System.out.println(e.getMessage()); }
 			catch (IOException e) { System.out.println(e.getMessage()); }
-			try { in.close(); inS.close();} catch (IOException e) { System.out.println(e.getMessage()); }  
 			this.partie(true);
 		}
 	}
@@ -587,13 +591,12 @@ public class Controller {
 		String pasCoule = seq.remove(0);
 		ArrayList<String> casesTouchees = new ArrayList<String>();
 		ArrayList<String> cases = new ArrayList<String>();
-				
-		ArrayList<String> coords = new ArrayList<String>();
+
 		for (String coord: seq) {
-			coords.add(coord);
-			if (coords.equals("x")) { 
-				casesTouchees.add(pasCoule);
-				coord = coord.substring(0, -1);
+			String fin = Character.toString(coord.charAt(coord.length()-1));
+			if (fin.equals("x")) { 
+				coord = coord.replaceAll("x", "");
+				casesTouchees.add(coord);
 			}
 			cases.add(coord);
 		}
@@ -606,7 +609,7 @@ public class Controller {
 			cuirasse.setCasesNavire(cases);
 			cuirasse.setCasesNavireTouchees(casesTouchees);
 			cuirasse.setDisposition(disposition);
-			if (pasCoule == "false") { cuirasse.setCasesNavireTouchees(coords); }
+			if (pasCoule == "false") { cuirasse.setCasesNavireTouchees(cases); }
 			return cuirasse;
 		}
 		if (name.equals("CROISEUR")) {
@@ -617,7 +620,7 @@ public class Controller {
 			croiseur.setCasesNavire(cases);
 			croiseur.setCasesNavireTouchees(casesTouchees);
 			croiseur.setDisposition(disposition);
-			if (pasCoule == "false") { croiseur.setCasesNavireTouchees(coords); }
+			if (pasCoule == "false") { croiseur.setCasesNavireTouchees(cases); }
 			return croiseur;
 		}
 		if (name.equals("DESTROYER")) {
@@ -628,7 +631,7 @@ public class Controller {
 			destroyer.setCasesNavire(cases);
 			destroyer.setCasesNavireTouchees(casesTouchees);
 			destroyer.setDisposition(disposition);
-			if (pasCoule == "false") { destroyer.setCasesNavireTouchees(coords); }
+			if (pasCoule == "false") { destroyer.setCasesNavireTouchees(cases); }
 			return destroyer;
 		}
 		if (name.equals("SOUSMARIN")) {
@@ -639,7 +642,7 @@ public class Controller {
 			sousMarin.setCasesNavire(cases);
 			sousMarin.setCasesNavireTouchees(casesTouchees);
 			sousMarin.setDisposition(disposition);
-			if (pasCoule == "false") { sousMarin.setCasesNavireTouchees(coords); }
+			if (pasCoule == "false") { sousMarin.setCasesNavireTouchees(cases); }
 			return sousMarin;
 		}
 		return new Navire(0,0,"");

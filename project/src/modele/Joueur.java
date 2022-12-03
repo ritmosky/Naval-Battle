@@ -146,16 +146,11 @@ public class Joueur {
 
 	public ArrayList<String> deplacer(Navire N, String sens) {
 		switch(sens) {
-		case "0":
-			return deplacerEnHaut(N);
-		case "1":
-			return deplacerEnBas(N);
-		case "2":
-			return deplacerAGauche(N);
-		case "3":
-			return deplacerADroite(N);
-		default:
-			return null;
+		case "0": return deplacerEnHaut(N);
+		case "1": return deplacerEnBas(N);
+		case "2": return deplacerAGauche(N);
+		case "3": return deplacerADroite(N);
+		default: return null;
 		}
 	}
 }
