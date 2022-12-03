@@ -41,7 +41,9 @@ public class ViewAcceuil {
 		
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setIcon(new ImageIcon("/Users/taoufiq/Documents/java/Naval-Battle/resources/worldofwarchips.jpg"));
+		String pwd = System.getProperty("user.dir");
+		System.out.println("\n\n Repertoire courant : " + pwd);
+		lblNewLabel_1.setIcon(new ImageIcon("../../resources/sauvegarde/imgAcceuil.jpg"));
 		
 		JButton chargPartBttn = new JButton("Charger Partie");
 		

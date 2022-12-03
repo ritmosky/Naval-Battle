@@ -1,10 +1,25 @@
 package controller;
 import java.util.Scanner;
+import java.awt.event.*;
 
 
 
-public class MainMenu {
+public class MainMenu implements KeyListener {
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		System.out.println("The key Released was: " + e.getKeyChar());
+		if (e.getKeyChar() == KeyEvent.VK_Q || e.isActionKey()) {
+		System.exit(0);
+			System.out.println("\n!!! SAUVEGARDE ET FIN DE LA PARTIE");
+		}
+	}
 	
+	@Override
+	public void keyReleased(KeyEvent e) {}
+	@Override
+	public void keyTyped(KeyEvent e) {}
+	  
 	public void affichage() {
 		Scanner in1 = new Scanner (System.in);	
 		String choice = "";
@@ -31,9 +46,9 @@ public class MainMenu {
 			case "3": 
 				System.out.println("\n --------------------- AFFICHER AIDE ---------------------");
 				continue;	
-			case "q": 
+			case "qq": 
 				System.out.println("\n --------------------- FIN --------------------- \n");
-				System.exit(0);;	
+				System.exit(0);	
 			}
 		}
 		in1.close();
@@ -42,7 +57,6 @@ public class MainMenu {
 	
 	public static void main(String[] args) {
 		MainMenu menu = new MainMenu();
-		menu.affichage();
-		
+		menu.affichage();	
 	}
 }

@@ -8,6 +8,7 @@ public class Grille {
 	int nLine;
 	int nCol;
 	String alphCol;
+	ArrayList<String> caseValide;
 	private String[][] cases;  
 
 
@@ -15,10 +16,12 @@ public class Grille {
 		this.nLine = l;
 		this.nCol = c;
 		this.alphCol = alphabet;
+		this.caseValide = new ArrayList<String>();
 		this.cases = new String[nLine][nCol];
 		for (int i= 0; i< nLine; i++) {
 			for (int j=0; j< nCol; j++) {
 				this.cases[i][j] = "  ";
+				this.caseValide.add(this.xyToString(j,i));
 			}
 		}
 	}
@@ -28,6 +31,8 @@ public class Grille {
 		int y = this.stringToXY(coord)[1];
 		return this.cases[x][y];
 	}
+	
+	public boolean estCaseValide(String coord) { return this.caseValide.contains(coord); }
 	
 	public ArrayList<String> getCaseTouche() {
 		ArrayList<String> l = new ArrayList<>();

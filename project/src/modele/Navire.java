@@ -40,9 +40,7 @@ public class Navire {
 	public void setCasesNavireTouchees(ArrayList<String> newcases) { this.casesTouchees = newcases; }
 	
 	public boolean estCoule() { 
-		if (this.casesTouchees == null) {
-			return false;
-		}
+		if (this.casesTouchees == null) { return false; }
 		return this.taille == this.casesTouchees.size(); 
 	}
 				

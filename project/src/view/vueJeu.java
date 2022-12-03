@@ -78,8 +78,6 @@ public class vueJeu {
 		FenetreGrilleEnemy.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.BLUE));
 
 		
-		
-		
 		Plateau.add(FenetreGrille, BorderLayout.WEST);
 		Plateau.add(FenetreGrilleEnemy);*/
 		ViewAcceuil acc = new ViewAcceuil();

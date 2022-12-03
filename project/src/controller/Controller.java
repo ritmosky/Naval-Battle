@@ -20,33 +20,38 @@ import java.io.IOException;
 public class Controller {
 	int nLine = 15; 
 	int nCol = 15; 
+	int nbCaseNavire;
 	String alph = "abcdefghijklmnopqrstuvwxyz";
 	Joueur j1; 
 	Joueur j2;
 	Joueur currentj;
 	
-	final HashMap<String, String> CUIRASSE = new HashMap<String, String>() {{
+	final HashMap<String, String> CUIRASSE = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
+	{
 		put("puissance", "9");
 		put("taille", "7");
 		put("symbole", "**");
 		put("nombre", "1");
 	}};
 
-	final HashMap<String, String> CROISEUR = new HashMap<String, String>() {{
+	final HashMap<String, String> CROISEUR = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
+	{
 		put("puissance", "4");
 		put("taille", "5");
 		put("symbole", "oo");
 		put("nombre", "2");
 	}};
 
-	final HashMap<String, String> DESTROYER = new HashMap<String, String>() {{
+	final HashMap<String, String> DESTROYER = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
+	{
 		put("puissance", "1");
 		put("taille", "3");
 		put("symbole", "++");
 		put("nombre", "3");
 	}};
 
-	final HashMap<String, String> SOUSMARIN = new HashMap<String, String>() {{
+	final HashMap<String, String> SOUSMARIN = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
+	{
 		put("puissance", "1");
 		put("taille", "1");
 		put("symbole", "ss");
@@ -54,7 +59,8 @@ public class Controller {
 		put("couleur", "4");
 	}}; 
 
-	final HashMap<String, String> COULEUR = new HashMap<String, String>() {{
+	final HashMap<String, String> COULEUR = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
+	{
 		put("xx", "\033[41m"); // rouge 
 		put("tt", "\033[47m"); // bleu  
 		put("oo", "\033[0;32m"); // vert
@@ -68,6 +74,10 @@ public class Controller {
 		this.j1 = new Joueur("JOUEUR", this.alph.substring(0, this.nLine), this.nLine, this.nCol);
 		this.j2 = new Joueur("ordi", this.alph.substring(0, this.nLine), this.nLine, this.nCol);
 		this.currentj = this.j1;
+		this.nbCaseNavire = Integer.parseInt(SOUSMARIN.get("nombre"))*Integer.parseInt(SOUSMARIN.get("taille"));
+		this.nbCaseNavire += Integer.parseInt(CROISEUR.get("nombre"))*Integer.parseInt(CROISEUR.get("taille"));
+		this.nbCaseNavire += Integer.parseInt(DESTROYER.get("nombre"))*Integer.parseInt(DESTROYER.get("taille"));
+		this.nbCaseNavire += Integer.parseInt(CUIRASSE.get("nombre"))*Integer.parseInt(CUIRASSE.get("taille"));
 	};
 
 	public Joueur getCurrentJ() { return this.currentj; }
@@ -166,7 +176,7 @@ public class Controller {
 				char y = alphCol.charAt(i);
 				String coord = Character.toString(y) + j;
 				String coul = COULEUR.get(grid1CurrentJ.getCase(coord));
-				System.out.print(coul + grid1CurrentJ.getCase(coord) + "\033[0m");	///////////////////////////////////
+				System.out.print(coul + grid1CurrentJ.getCase(coord) + "\033[0m");	
 				System.out.print("|");		
 			}
 			// REMPLISSAGE DE LA GRILLE 2 DU JOUEUR COURANT
@@ -176,10 +186,10 @@ public class Controller {
 				char y = alphCol.charAt(i);
 				String coord = Character.toString(y) + j;
 				String coul = COULEUR.get(grid2CurrentJ.getCase(coord));
-				if (casesEclairees != null && casesEclairees.contains(coord)) { //////////////////////////////
-					//System.out.print(coul + grid2CurrentJ.getCase(coord) + "\033[0m"); "\u001B[45m"
+				if (casesEclairees != null && casesEclairees.contains(coord)) { 
+					if (coord.equals(casesEclairees.get(0))) {System.out.print("\u001B[45m" + "tt" + "\033[0m");}
 					if (grid2CurrentJ.getCase(coord) == "  ") {System.out.print("\u001B[45m" + "  " + "\033[0m");}
-					if (grid2CurrentJ.getCase(coord) != "  ") {System.out.print("\u001B[45m" + "ff" + "\033[0m");}
+					if (grid2CurrentJ.getCase(coord) != "  " && !coord.equals(casesEclairees.get(0))) {System.out.print("\u001B[45m" + "ff" + "\033[0m");}
 				}
 				else { System.out.print(coul + grid2CurrentJ.getCase(coord) + "\033[0m");	}
 				System.out.print("|");		
@@ -214,7 +224,7 @@ public class Controller {
 	public boolean deplacerNavire(Joueur j, String navireCoord) {
 		Scanner inDeplacer = new Scanner (System.in); 
 		// NAVIRE A DEPLACER
-		int choice = -1;
+		String choice = "";
 		int indNavireADeplacer = this.trouverNavireAvecCoord(j, navireCoord);
 		Navire navireADeplacer = j.getNavires().get(indNavireADeplacer);
 		ArrayList<String> newCoords = new ArrayList<String>();
@@ -231,7 +241,7 @@ public class Controller {
 			// DEPLACEMENT PAR L ORDINATEUR
 			if (j.getName() == "ordi") {
 				Random r = new Random();
-				choice = r.nextInt(0, 4);
+				choice = Integer.toString(r.nextInt(0, 4));
 			}
 			// CHOIX DE DEPLACEMENT POUR JOUEUR PHYSIQUE
 			else {
@@ -240,12 +250,15 @@ public class Controller {
 					System.out.println("- Vers le bas, tapez 1");
 					System.out.println("- Vers la gauche, tapez 2 ");
 					System.out.print("- Vers la droite, tapez 3 \n=> CHOIX : ");
-					choice = inDeplacer.nextInt();
-				} while (choice != 0 && choice != 1 && choice != 2 && choice != 3);
+					choice = inDeplacer.nextLine();
+				} while (!choice.equals("0") && !choice.equals("1") && !choice.equals("2") && !choice.equals("3"));
 			}
 			newCoords = j.deplacer(navireADeplacer, choice);
 			// DEPLACEMENT IMPOSSIBLE
-			if (newCoords == null) { return false; } 
+			if (newCoords == null) { 
+				if (j.getName()!="ordi") {System.out.println("!!! DEPLACEMENT IMPOSSIBLE; EFFECTUER UN TIR !!!");}
+				return false; 
+			}
 			// UPDATE DES NOUVELLES COORDONNEES DU NAVIRE DU JOUEUR
 			navireADeplacer.setCasesNavire(newCoords);
 			j.getNavires().set(indNavireADeplacer, navireADeplacer);
@@ -257,15 +270,15 @@ public class Controller {
 			// DEPLACEMENT POUR L ORDINATEUR
 			if (j.getName() == "ordi") {
 				Random r = new Random();
-				choice = r.nextInt(2, 4);
+				choice = Integer.toString(r.nextInt(2, 4));
 			}
 			// CHOIX DE DEPLACEMENT POUR JOUEUR PHYSIQUE
 			else {
 				do {
 					System.out.println("- Vers la gauche, tapez 2 ");
 					System.out.print("- Vers la droite, tapez 3 \n\n=> choix: ");
-					choice = inDeplacer.nextInt();
-				} while (choice != 2 && choice != 3 && choice != 9);
+					choice = inDeplacer.nextLine();
+				} while (!choice.equals("2") && !choice.equals("3"));
 			}
 		}
 
@@ -274,20 +287,24 @@ public class Controller {
 			// DEPLACEMENT POUR L ORDINATEUR
 			if (j.getName() == "ordi") {
 				Random r = new Random();
-				choice = r.nextInt(0, 2);
+				choice = Integer.toString(r.nextInt(0, 2));
 			}
 			// CHOIX DE DEPLACEMENT POUR JOUEUR PHYSIQUE
 			else {
 				do {
 					System.out.println("- Vers le haut, tapez 0");
 					System.out.print("- Vers le bas, tapez 1 \n\n=> choix: ");
-					choice = inDeplacer.nextInt();
-				} while (choice != 0 && choice != 1);
+					choice = inDeplacer.nextLine();
+				} while (!choice.equals("0") && !choice.equals("1"));
 			}
 		}
 		newCoords = j.deplacer(navireADeplacer, choice);
 		// SI DEPLACEMENT IMPOSSIBLE
-		if (newCoords == null) { return false; } 
+		if (newCoords == null) { 
+			if (j.getName()!="ordi") {System.out.println("!!! DEPLACEMENT IMPOSSIBLE; EFFECTUER UN TIR !!!");}
+			return false; 
+		} 
+	
 		// UPDATE DES NOUVELLES COORDONNEES DU NAVIRE DU JOUEUR
 		navireADeplacer.setCasesNavire(newCoords);
 		j.getNavires().set(indNavireADeplacer, navireADeplacer);
@@ -316,28 +333,35 @@ public class Controller {
 			}
 			// CHOIX PAR LE JOUEUR PHYSIQUE
 			else {
-				System.out.print("\nCASE CIBLE DANS GRILLE 2 : ");
-				coordCible = inTir.nextLine();
+				do {
+					System.out.print("\nCASE CIBLE DANS GRILLE 2 : ");
+					coordCible = inTir.nextLine();
+				} while (grid2.estCaseValide(coordCible) == false);
 			}
-		} while (grid2.estCaseTouchee(coordCible) == true);
+		} while (grid2.estCaseValide(coordCible) == false);
 		
 		// ACTION DU TIR
 		boolean b = false;
 		int[] tabxy = grid2.stringToXY(coordCible); 
-		if (grid2.estCaseNavire(coordCible) == false) { grid1Ennemy.setCase("tt", coordCible);}
-		if (grid2.estCaseNavire(coordCible) == true) { grid1Ennemy.setCase("xx", coordCible); b = true;}
+		if (grid2.estCaseNavire(coordCible) == false) { grid1Ennemy.setCase("tt", coordCible); --pssc;}
+		if (grid2.estCaseNavire(coordCible) == true) { 
+			int indN = this.trouverNavireAvecCoord(ennemy, coordCible);
+			ennemy.addCasesNaviresTouches(coordCible, indN);
+			grid1Ennemy.setCase("xx", coordCible); 
+			b = true; 
+			--pssc;
+		}
 		for (int x= tabxy[0]-1; x<= tabxy[0]+1; x++) {
-			if (pssc<0) { break;}
-			else if (j.getNavires().get(indexNavireChoisi).getName() != "DESTROYER") {
-				for (int y= tabxy[1]-1; y<= tabxy[1]+1; y++) {
-					if (pssc<0) { break;}
-					if (x<0 || y<0 || y>=this.nLine || x>=this.nCol) { continue; }
+			for (int y= tabxy[1]-1; y<= tabxy[1]+1; y++) {
+				if (pssc != 0) {
+					if (x<0 || y<0 || y >= this.nLine || x >= this.nCol) { continue; }
 					String c = grid2.xyToString(x, y);
-					if (c != coordCible) {
+					if (c.equals(coordCible) == false) {
 						int indN = this.trouverNavireAvecCoord(ennemy, c);
 						if (indN > -1) { ennemy.addCasesNaviresTouches(c, indN); }
 						if (grid2.estCaseNavire(c) == false) { grid1Ennemy.setCase("tt", c);}
 						if (grid2.estCaseNavire(c) == true) { grid1Ennemy.setCase("xx", c); b = true;}
+						pssc--;
 					}
 				}
 			}
@@ -363,8 +387,8 @@ public class Controller {
 		
 		if (ennemy.gotNavireCoule() == true && b == true) {
 			ArrayList<Integer> l = ennemy.getIndNavireCoule();
-			if (ennemy.getName() == "ordi") { System.out.println("\n !!! VOUS AVEZ COULE " + l.size() + " NAVIRE(S) ENNEMI(S)"); }
-			if (ennemy.getName() != "ordi") { System.out.println("\n !!! WARNING !!! " + l.size() + " NAVIRE(S) COULE(S) \n"); }
+			if (ennemy.getName() == "ordi") { System.out.println("\n !!! NAVIRE COULE !!!"); }
+			if (ennemy.getName() != "ordi") { System.out.println("\n !!! WARNING NAVIRE COULE !!!"); }
 		}
 		return b;
 	}
@@ -383,7 +407,7 @@ public class Controller {
 
 		// DEROULEMENT DES TOURS
 		while (fini != true) {
-			boolean actionEffectuee = false;
+			boolean deplacementFait = false;
 			currentJ = this.getJoueurAt(tour%2);
 			ennemi = this.getJoueurAt((tour+1)%2);
 			this.currentj = currentJ;
@@ -406,15 +430,20 @@ public class Controller {
 					coordR = currentJ.getGrid1().xyToString(xR, yR);
 				} while (currentJ.getGrid1().estCaseNavire(coordR) == false);
 				// ACTION ALEATOIRE
-				int action = randP.nextInt(2); // false DEPLACER si deplacement impossible,j.deplacer(navireADeplacer, choice) ----------------------------------------------------------------------------
-				if (action == 0) { System.out.print("\n\n##### ordi a deplacer navire de coord: " + coordR); this.deplacerNavire(currentJ, coordR); }
-				if (action == 1) { System.out.print("\n\n##### ordi a tirer avec navire de coord: " + coordR); this.tirerSurNavire(currentJ, ennemi, coordR); }
+				System.out.println(coordR);
+				int action = randP.nextInt(2);
+				if (action == 0) { 
+					System.out.print("\n\n##### ordi a deplacer navire de coord: " + coordR); deplacementFait = this.deplacerNavire(currentJ, coordR); 
+				}
+				if (action == 1 || deplacementFait == false) { 
+					System.out.print("\n\n##### ordi a tirer avec navire de coord: " + coordR); this.tirerSurNavire(currentJ, ennemi, coordR); 
+				}
 			}
 
 			// GESTION DU TOUR DU JOUEUR
 			else {
-				Scanner inCoord = new Scanner (System.in); 
 				// DEMANDER LES COORDONNEES DU NAVIRE DU JOUEUR COURANT
+				Scanner inCoord = new Scanner (System.in); 
 				int indNavire = -1;
 				String coord = "";
 				do {
@@ -424,22 +453,29 @@ public class Controller {
 				} while(indNavire < 0);
 				// DEMANDER L'ACTION A EFFECTUER
 				Scanner inAction = new Scanner (System.in); 
-				int choice = -1;
+				String choice = "";
 				do {
 					System.out.println("\n\n- DEPLACER LE NAVIRE, TAPEZ 1");
 					System.out.print("- TIRER AVEC LE NAVIRE, TAPEZ 2");
+					System.out.print("\n- QUITTER/SAVE, TAPER 3");
 					System.out.print("\nCHOIX => ");
-					choice = inAction.nextInt();
-				} while(choice != 1 && choice != 2);
+					choice = inAction.nextLine();
+				} while(choice.equals("1") == false && choice.equals("2") == false && choice.equals("3") == false);
 				// EXECUTER ACTION
-				if (choice == 1) { this.deplacerNavire(currentJ, coord); }
-				else if (choice == 2) { this.tirerSurNavire(currentJ, ennemi, coord); }
+				if (choice.equals("1") == true) { deplacementFait = this.deplacerNavire(currentJ, coord); }
+				else if (choice.equals("2") == true /*|| deplacementFait == false*/) { this.tirerSurNavire(currentJ, ennemi, coord); }
+				else if (choice.equals("3") == true) { this.sauvegarderPartie(currentJ); }
 			}
 
 			// PASSAGE AU PROCHAIN TOUR
 			this.setGrid2(currentJ, ennemi);
 			this.afficher2Grilles(currentJ, ennemi, null);
-			fini = ennemi.estVaincu();
+			fini = this.nbCaseNavire == ennemi.getCasesNaviresTouches().size();
+			System.out.println("\nNB CASE COULE ENNEMI = "+ ennemi.getCasesNaviresTouches().size() + "/" + this.nbCaseNavire);
+			if (fini == true) {
+				System.out.println("\n !!! FIN DE LA PARTIE, " + currentJ.getName() + "GAGNE !!! ");
+				System.exit(0);
+			}
 			if (currentJ.getName()!="ordi") {for (int i = 1; i < 5; i++) {
 				int sec = 5 - i;
 				System.out.println(sec);
@@ -454,17 +490,18 @@ public class Controller {
 	public void sauvegarderPartie(Joueur j) {
 		System.out.print("\n\n----- SAUVEGARDE DE PARTIE ----- \n"); 
 
-		String pwd = System.getProperty("user.dir");
-		System.out.println("\n\n Repertoire courant : " + pwd);
-
-		// REPERTOIRE DE SAUVEGARDE
-		File saveF = new File("../sauvegardes"); 
-		File[] saveFolder = saveF.listFiles();
+		File doss = new File("../../resources/sauvegarde/"); 
+		int nbFich = 0;
+		for (File fich : doss.listFiles()) { 
+			if(fich.getName().startsWith("save")) {
+				nbFich++;
+			}
+		}
 
 		// CREATION DU NOUVEAU FICHIER DE SAUVEGARDE ET VERIFICATION
 		try {		
 
-			File f = new File ("../sauvegardes/" + "saveFile"+(saveFolder.length+1)+".txt");
+			File f = new File ("../../resources/sauvegarde/" + "save"+ (nbFich+1) +".txt");
 			FileWriter fw = new FileWriter(f.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
 
@@ -474,6 +511,7 @@ public class Controller {
 				for (String uneCase: N.getCasesNavire()) {
 					line += ",";
 					line += uneCase;
+					if (j.getGrid1().estCaseNavireTouchee(uneCase)) { line += "x"; } 
 				}
 				line += "\n";
 				bw.write(line);
@@ -487,70 +525,86 @@ public class Controller {
 
 	// ------------------------ CHARGER UNE PARTIE ------------------------ //
 	public void chargerPartie() {
-		System.out.print("\n\n----- CHARGEMENT DE PARTIE ----- \n\n"); 
-
 		// REPERTOIRE DE SAUVEGARDE
-		File saveF = new File("../sauvegardes"); 
-		File[] saveFolder = saveF.listFiles();
+		File doss = new File("../../resources/sauvegarde/"); 
 
 		// AFFICHER LES SAUVEGARDES DISPONIBLES
-		for (int i = 0; i < saveFolder.length; i++) {
-			System.out.println("- " + saveFolder[i].getName()); 
+		int nb = 0;
+		for (File fich : doss.listFiles()) { 
+			if(fich.getName().startsWith("save")) {
+				System.out.println("- " + fich.getName()); 
+				nb++;
+			}
+		}	
+		if (nb == 0) { 
+			System.out.println("\n !!! AUCUNE SAUVEGARDE TROUVEE !!!"); 
+			System.out.println("\n !!! NOUVELLE PARTIE !!!"); 
+			this.partie(false);
 		}
 
-		// CHOIX DU FICHIER A CHARGER
-		Scanner inS = new Scanner (System.in); 
-		String name = "";
-		File myFile;
-		do {
-			System.out.print("\n=> Entrez le nom du fichier de sauvegarde : "); 
-			name = inS.nextLine();
-			myFile = new File ("../sauvegardes/" + name);
-		} while (Arrays.asList(saveFolder).contains(myFile) == false);
+		else {
+			// CHOIX DU FICHIER A CHARGER
+			Scanner inS = new Scanner (System.in); 
+			String name = "";
+			File nouvFich;
+			do {
+				System.out.print("\n=> Entrez le nom du fichier de sauvegarde : "); 
+				name = inS.nextLine();
+				nouvFich = new File ("../../resources/sauvegarde/" + name);
+			} while (nouvFich.exists() == false);
 
-		// LECTURE DU FICHIER
-		BufferedReader in = null;
-		ArrayList<Navire> navires = new ArrayList<Navire>();
-		try {
-			in = new BufferedReader(new FileReader(myFile));
-			String line = "";
-			
-			// RECUPERATION DES DONNEES ET INITIALISATION DE LA GRILLE 1 DU JOUEUR 1
-			while ((line = in.readLine())!= null) {
-				Navire N = this.lineToNavire(line);
-				navires.add(N);
-				this.j1.addNavire(N);
-				String symbole = N.getSymbole();
-				for (String c: N.getCasesNavire()) {
-					this.j1.getGrid1().setCase(symbole, c);
+			// LECTURE DU FICHIER
+			BufferedReader in = null;
+			ArrayList<Navire> navires = new ArrayList<Navire>();
+			try {
+				in = new BufferedReader(new FileReader(nouvFich));
+				String line = "";
+
+				// RECUPERATION DES DONNEES ET INITIALISATION DE LA GRILLE 1 DU JOUEUR 1
+				while ((line = in.readLine())!= null) {
+					Navire N = this.lineToNavire(line);
+					navires.add(N);
+					this.j1.addNavire(N);
+					String symbole = N.getSymbole();
+					for (String c: N.getCasesNavire()) {
+						if (N.getCasesTouchees().contains(c)) { this.j1.getGrid1().setCase("xx", c); }
+						else { this.j1.getGrid1().setCase(symbole, c); }
+					}
 				}
-			}
 
-
-		} catch (FileNotFoundException e) { System.out.println(e.getMessage()); }
-		catch (IOException e) { System.out.println(e.getMessage()); }
-		try { in.close(); } catch (IOException e) { System.out.println(e.getMessage()); }  
-
-		this.partie(true);
+			} catch (FileNotFoundException e) { System.out.println(e.getMessage()); }
+			catch (IOException e) { System.out.println(e.getMessage()); }
+			try { in.close(); inS.close();} catch (IOException e) { System.out.println(e.getMessage()); }  
+			this.partie(true);
+		}
 	}
 
 	
 	public Navire lineToNavire(String line) {
-		ArrayList<String> seq = new ArrayList(Arrays.asList(line.split(",")));
+		ArrayList<String> seq = new ArrayList<String>(Arrays.asList(line.split(",")));
 		String name = seq.remove(0);
 		String disposition = seq.remove(0);
 		String pasCoule = seq.remove(0);
+		ArrayList<String> casesTouchees = new ArrayList<String>();
+		ArrayList<String> cases = new ArrayList<String>();
 				
 		ArrayList<String> coords = new ArrayList<String>();
 		for (String coord: seq) {
 			coords.add(coord);
+			if (coords.equals("x")) { 
+				casesTouchees.add(pasCoule);
+				coord = coord.substring(0, -1);
+			}
+			cases.add(coord);
 		}
+		
 		if (name.equals("CUIRASSE")) {
 			int taille = Integer.parseInt(this.CUIRASSE.get("taille"));
 			int puissance = Integer.parseInt(this.CUIRASSE.get("puissance"));
 			String symbole = this.CUIRASSE.get("symbole");
 			Cuirasse cuirasse = new Cuirasse(taille, puissance, symbole);
-			cuirasse.setCasesNavire(coords);
+			cuirasse.setCasesNavire(cases);
+			cuirasse.setCasesNavireTouchees(casesTouchees);
 			cuirasse.setDisposition(disposition);
 			if (pasCoule == "false") { cuirasse.setCasesNavireTouchees(coords); }
 			return cuirasse;
@@ -560,7 +614,8 @@ public class Controller {
 			int puissance = Integer.parseInt(this.CROISEUR.get("puissance"));
 			String symbole = this.CROISEUR.get("symbole");
 			Croiseur croiseur = new Croiseur(taille, puissance, symbole);
-			croiseur.setCasesNavire(coords);
+			croiseur.setCasesNavire(cases);
+			croiseur.setCasesNavireTouchees(casesTouchees);
 			croiseur.setDisposition(disposition);
 			if (pasCoule == "false") { croiseur.setCasesNavireTouchees(coords); }
 			return croiseur;
@@ -570,7 +625,8 @@ public class Controller {
 			int puissance = Integer.parseInt(this.DESTROYER.get("puissance"));
 			String symbole = this.DESTROYER.get("symbole");
 			Destroyer destroyer = new Destroyer(taille, puissance, symbole);
-			destroyer.setCasesNavire(coords);
+			destroyer.setCasesNavire(cases);
+			destroyer.setCasesNavireTouchees(casesTouchees);
 			destroyer.setDisposition(disposition);
 			if (pasCoule == "false") { destroyer.setCasesNavireTouchees(coords); }
 			return destroyer;
@@ -580,7 +636,8 @@ public class Controller {
 			int puissance = Integer.parseInt(this.SOUSMARIN.get("puissance"));
 			String symbole = this.SOUSMARIN.get("symbole");
 			SousMarin sousMarin = new SousMarin(taille, puissance, symbole);
-			sousMarin.setCasesNavire(coords);
+			sousMarin.setCasesNavire(cases);
+			sousMarin.setCasesNavireTouchees(casesTouchees);
 			sousMarin.setDisposition(disposition);
 			if (pasCoule == "false") { sousMarin.setCasesNavireTouchees(coords); }
 			return sousMarin;

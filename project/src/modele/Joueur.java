@@ -32,7 +32,7 @@ public class Joueur {
 	public ArrayList<String> getCasesNaviresTouches() { return this.casesNaviresTouches; }
 	
 	public void addCasesNaviresTouches(String c, int indNavire) { 
-		this.casesNaviresTouches.add(c); 
+		if (this.casesNaviresTouches.contains(c) == false) { this.casesNaviresTouches.add(c); }
 		if (this.casesNaviresTouches.contains(c) == true) {
 			this.getNavires().get(indNavire).addCasesTouchees(c);}
 	}
@@ -47,19 +47,8 @@ public class Joueur {
 		return l;
 	}
 	
-	public boolean gotNavireCoule() {
-		return this.getIndNavireCoule().size() != 0;
-	}
+	public boolean gotNavireCoule() { return this.getIndNavireCoule().size() != 0; }
 	
-	
-	public boolean estVaincu() {
-		for (Navire N: this.getNavires()) {
-			if (N.estCoule() == false) { return false; }
-		}
-		return true;
-	}
-
-
 	public ArrayList<String> deplacerAGauche(Navire N) {
 		ArrayList<String> newCoords = new ArrayList<String>();
 		String symbole = N.symbole;
@@ -155,15 +144,15 @@ public class Joueur {
 	}
 
 
-	public ArrayList<String> deplacer(Navire N, int sens) {
+	public ArrayList<String> deplacer(Navire N, String sens) {
 		switch(sens) {
-		case 0:
+		case "0":
 			return deplacerEnHaut(N);
-		case 1:
+		case "1":
 			return deplacerEnBas(N);
-		case 2:
+		case "2":
 			return deplacerAGauche(N);
-		case 3:
+		case "3":
 			return deplacerADroite(N);
 		default:
 			return null;
