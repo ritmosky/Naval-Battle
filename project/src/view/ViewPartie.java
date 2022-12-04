@@ -18,22 +18,24 @@ import java.awt.Dimension;
 import controller.*;
 import modele.Navire;
 
+
 public class ViewPartie {
 
 	private JFrame frmNavalBattle;
 	private Controller ctrl;
 	
 	String coordN = "";
+	String coordCible = "";
 	JPanel panel = new JPanel();
 	JButton tirerBttn = new JButton("TIRER");
 	JButton deplacerBttn = new JButton("DEPLACER");
-	int nbBttnSelect = 0;
 	int indNavire;
 	
 	String[][] grid1;
 	String[][] grid2;
 	
 	Navire navire; 
+	Navire cibleNavire;
 	JPanel panel_2 = new JPanel();
 	JPanel panel_3 = new JPanel();
 	String alphCol;
@@ -42,10 +44,19 @@ public class ViewPartie {
 	JButton deplacerGauche = new JButton("GAUCHE");
 	JButton deplacerDroite = new JButton("DROITE");
 	JLabel mssgbox = new JLabel("CLIQUEZ SUR UNE CASE DE NAVIRE POUR EXECUTER UNE ACTION");
+	private final JPanel panel_4 = new JPanel();
+
+	private final JLabel coordLabel = new JLabel("NAVIRE : ");
+	private final JLabel cibleLabel = new JLabel("CIBLE : ");
+	private final JLabel coordLab = new JLabel("a0");
+	private final JLabel cibleLab = new JLabel("a0");
+	private final JLabel lblNewLabel_1 = new JLabel("|");
+	private final JLabel lblNewLabel_2 = new JLabel("|");
+	private final JLabel lblNewLabel_3 = new JLabel("   |   ");
 	
 	public ViewPartie(boolean newPartie){ 
 		this.ctrl = new Controller();
-		if (newPartie == false) { ctrl.DistribuerNavire(ctrl.getJ1()); }
+		if (newPartie == true) { ctrl.DistribuerNavire(ctrl.getJ1()); }
 		
 		ctrl.DistribuerNavire(ctrl.getJ2());
 		ctrl.setGrid2(ctrl.getJ1(), ctrl.getJ2());	
@@ -55,26 +66,10 @@ public class ViewPartie {
 		grid2 = ctrl.getCurrentJ().getGrid2().getCases();
 
 		initialize(); 
-		setGrid1(false);
-		setGrid2();
-
+		deroulement();
+		//setGrid1(false);
+		//setGrid2(false);
 	}
-
-	/*/ RECUPERATION DES DONNEES ET INITIALISATION DE LA GRILLE 1 DU JOUEUR 1
-				while ((line = in.readLine())!= null) {
-					Navire N = this.lineToNavire(line);
-					navires.add(N);
-					this.j1.addNavire(N);
-					String symbole = N.getSymbole();
-					for (String c: N.getCasesNavire()) {
-						if (N.getCasesTouchees().contains(c)) { 
-							this.j1.getGrid1().setCase("xx", c);
-							int indN = this.trouverNavireAvecCoord(this.j1, c);
-							this.j1.addCasesNaviresTouches(c, indN);
-						}
-						else { this.j1.getGrid1().setCase(symbole, c); }
-					}
-				}*/
 	
 	public JFrame getFrame() { return this.frmNavalBattle; }
 	/**
@@ -86,53 +81,128 @@ public class ViewPartie {
 		frmNavalBattle = new JFrame();
 		frmNavalBattle.setResizable(false);
 		frmNavalBattle.setTitle("NAVAL BATTLE");
-		frmNavalBattle.setBounds(100, 100, 852, 502);
+		frmNavalBattle.setBounds(100, 100, 913, 520);
 		frmNavalBattle.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmNavalBattle.setLocationRelativeTo(null); 
 		frmNavalBattle.setPreferredSize(new Dimension(800,800));
-		
-		//
 		frmNavalBattle.getContentPane().add(panel, BorderLayout.NORTH);
 		
-		//
+		panel.add(panel_4);
+		panel_4.add(coordLabel);
+		panel_4.add(coordLab);
+		panel_4.add(lblNewLabel_3);
+		panel_4.add(cibleLabel);
+		panel_4.add(cibleLab);
+		panel.add(lblNewLabel_2);
+
 		tirerBttn.setEnabled(false);
 		panel.add(tirerBttn);
 		
-		//
 		deplacerBttn.setEnabled(false);
 		panel.add(deplacerBttn);
+		panel.add(lblNewLabel_1);
 		
-		JPanel panel_2 = new JPanel();
+		JButton validerBttn = new JButton("VALIDER");
+		panel_4.add(validerBttn);
+		validerBttn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				ctrl.switchJ();
+				setGrid1(false);
+				setGrid2(false);
+				mssgbox.setText("TOUR PASSE");
+			}
+		});
+
 		panel.add(panel_2);
-		
-		//
 		deplacerHaut.setEnabled(false);
 		panel_2.add(deplacerHaut);
+		deplacerHaut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				deplacerHaut.setEnabled(false);
+				deplacerDroite.setEnabled(false);
+				deplacerGauche.setEnabled(false);
+				deplacerBas.setEnabled(false);
+				ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "0");
+				if (newCoords == null) {
+					mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
+					deplacerBttn.setEnabled(false);
+					tirerBttn.setEnabled(true);
+				}
+				navire.setCasesNavire(newCoords);
+				ctrl.getCurrentJ().getNavires().set(indNavire, navire);
+				ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
+				grid2 = ctrl.getCurrentJ().getGrid2().getCases();
+				setGrid1(true);
+				mssgbox.setText("DEPLACEMENT EFFECTUE A HAUT");
+			}
+		});
 		
-		//
 		deplacerBas.setEnabled(false);
 		panel.add(deplacerBas);
+		deplacerBas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				deplacerBas.setEnabled(false);
+				deplacerDroite.setEnabled(false);
+				deplacerGauche.setEnabled(false);
+				deplacerHaut.setEnabled(false);
+				ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "1");
+				if (newCoords == null) {
+					mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
+					deplacerBttn.setEnabled(false);
+					tirerBttn.setEnabled(true);
+				}
+				navire.setCasesNavire(newCoords);
+				ctrl.getCurrentJ().getNavires().set(indNavire, navire);
+				ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
+				grid2 = ctrl.getCurrentJ().getGrid2().getCases();
+				setGrid1(true);
+				mssgbox.setText("DEPLACEMENT EFFECTUE A BAS");
+			}
+		});
 		
-		//
 		deplacerGauche.setEnabled(false);
 		panel.add(deplacerGauche);
+		deplacerGauche.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				deplacerGauche.setEnabled(false);
+				deplacerDroite.setEnabled(false);
+				deplacerHaut.setEnabled(false);
+				deplacerBas.setEnabled(false);
+				ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "2");
+				if (newCoords == null) {
+					mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
+					deplacerBttn.setEnabled(false);
+					tirerBttn.setEnabled(true);
+				}
+				navire.setCasesNavire(newCoords);
+				ctrl.getCurrentJ().getNavires().set(indNavire, navire);
+				ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
+				grid2 = ctrl.getCurrentJ().getGrid2().getCases();
+				setGrid1(true);
+				mssgbox.setText("DEPLACEMENT EFFECTUE A GAUCHE");
+			}
+		});
 		
-		//
 		deplacerDroite.setEnabled(false);
 		panel.add(deplacerDroite);
 		deplacerDroite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
+				deplacerDroite.setEnabled(false);
+				deplacerGauche.setEnabled(false);
+				deplacerHaut.setEnabled(false);
+				deplacerBas.setEnabled(false);
 				ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "3");
 				if (newCoords == null) {
-					// tirer
 					mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
 					deplacerBttn.setEnabled(false);
-					tirerBttn.setEnabled(false);
+					tirerBttn.setEnabled(true);
 				}
 				navire.setCasesNavire(newCoords);
 				ctrl.getCurrentJ().getNavires().set(indNavire, navire);
-				System.out.println(newCoords.toString());
+				ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
+				grid2 = ctrl.getCurrentJ().getGrid2().getCases();
 				setGrid1(true);
+				mssgbox.setText("DEPLACEMENT EFFECTUE A DROITE");
 			}
 		});
 		
@@ -149,13 +219,9 @@ public class ViewPartie {
 		JLabel mssg = new JLabel("  MESSAGE :  ");
 		mssg.setForeground(new Color(155, 76, 62));
 		panel_1.add(mssg);
-		
-		//
 		panel_1.add(mssgbox);
-		
 		JButton quitBttn = new JButton("SAUVEGARDER ET QUITTER");
 		panel_1.add(quitBttn);
-		
 		quitBttn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				File doss = new File("../../resources/sauvegarde/"); 
@@ -197,21 +263,22 @@ public class ViewPartie {
 		
 		deplacerBttn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				deplacerBttn.setSelected(true);
 				tirerBttn.setSelected(false);
+				deplacerBttn.setSelected(true);
+				tirerBttn.setEnabled(false);
 				if (navire != null && navire.getName() == "SOUSMARIN") {
 					deplacerHaut.setEnabled(true);
 					deplacerBas.setEnabled(true);
 					deplacerGauche.setEnabled(true);
 					deplacerDroite.setEnabled(true);
 				}
-				if (navire != null && navire.getDisposition() == "horizontale") {
+				else if (navire != null && navire.getDisposition() == "horizontale") {
 					deplacerGauche.setEnabled(true);
 					deplacerDroite.setEnabled(true);
 					deplacerHaut.setEnabled(false);
 					deplacerBas.setEnabled(false);
 				}
-				if (navire != null && navire.getDisposition() == "verticale") {
+				else if (navire != null && navire.getDisposition() == "verticale") {
 					deplacerHaut.setEnabled(true);
 					deplacerBas.setEnabled(true);
 					deplacerGauche.setEnabled(false);
@@ -223,94 +290,35 @@ public class ViewPartie {
 		
 		tirerBttn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
+				deplacerBttn.setSelected(false);
+				setGrid2(true);
 				deplacerHaut.setEnabled(false);
 				deplacerBas.setEnabled(false);
 				deplacerGauche.setEnabled(false);
 				deplacerDroite.setEnabled(false);
-				deplacerBttn.setSelected(false);
+				deplacerBttn.setEnabled(false);
 				tirerBttn.setSelected(true);
-				deplacerHaut.setEnabled(false);
 				mssgbox.setText("CLIQUER SUR UNE CASE DANS LA GRILLE 2, POUR TIRER");
 			}
 		});
 	}
 	
-	/*
-	public void setGrid() {	
-		panel_2.setPreferredSize(new Dimension(400,400));
-		panel_2.setBackground(new Color(39, 101, 149));
-		frmNavalBattle.getContentPane().add(panel_2, BorderLayout.WEST);
-		panel_2.setLayout(new GridLayout(15, 15, 0, 0));
-		Color c = Color.WHITE;
-		for (int i= 0; i< 15; i++) {
-			for (int j= 0; j< 15; j++) {
-				char y = alphCol.charAt(i);
-				String coord = Character.toString(y) + j;
-				String val = grid1[j][i];//ctrl.getJ1().getGrid1().getCase(coord);
-				if (val == "xx") { c = Color.RED;} 
-				if (val == "tt") { c = Color.BLUE;} 
-				if (val == "oo") { c = Color.GREEN;} 
-				if (val == "ss") { c = Color.CYAN;} 
-				if (val == "++") { c = Color.PINK;} 
-				if (val == "**") { c = Color.YELLOW;} 
-				if (val == "  ") { c = Color.WHITE;} 
-				JButton b = new JButton(val);
-				b.setBackground(c);
-				b.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e){
-						tirerBttn.setEnabled(true);
-						deplacerBttn.setEnabled(true);
-						if (b.isSelected() == true) { b.setSelected(false); nbBttnSelect--;}
-						else {  b.setSelected(true); nbBttnSelect++;}
-						coordN = coord;
-						indNavire = ctrl.trouverNavireAvecCoord(ctrl.getCurrentJ(), coordN);
-						navire = ctrl.getCurrentJ().getNavires().get(indNavire);
-					}
-				});
-				panel_2.add(b);
-			}
-		}
-		panel_3.setPreferredSize(new Dimension(400,400));
-		panel_3.setBackground(new Color(9, 10, 11));
-		frmNavalBattle.getContentPane().add(panel_3, BorderLayout.EAST);
-		panel_3.setLayout(new GridLayout(15, 15, 0, 0));
-		for (int i= 0; i< 15; i++) {
-			//gbc.gridx = i;
-			for (int j= 0; j< 15; j++) {
-				char y = alphCol.charAt(i);
-				String coord = Character.toString(y) + j;
-				String val = grid2[j][i];//ctrl.getJ1().getGrid2().getCase(coord);
-				JButton b = new JButton(val);
-				if (val == "xx") { c = Color.RED;} 
-				if (val == "tt") { c = Color.BLUE;} 
-				if (val == "oo") { c = Color.GREEN;} 
-				if (val == "ss") { c = Color.CYAN;} 
-				if (val == "++") { c = Color.PINK;} 
-				if (val == "**") { c = Color.YELLOW;} 
-				b.setBackground(c);
-				panel_3.add(b);
-			}
-		}
-	}*/
 	
-	
-	
-	public void setGrid1(boolean moove) {
+	public void setGrid1(boolean moovebool) {
 		panel_2 = new JPanel();
 		panel_2.setPreferredSize(new Dimension(400,400));
 		panel_2.setBackground(new Color(39, 101, 149));
 		frmNavalBattle.getContentPane().add(panel_2, BorderLayout.WEST);
-		panel_2.setLayout(new GridLayout(15, 15, 0, 0));
+		GridLayout grid = new GridLayout(ctrl.nLine, ctrl.nCol, 0, 0);
+		panel_2.setLayout(grid);
+		//ctrl.afficher2Grilles(ctrl.getCurrentJ(),ctrl.getJ2(),null);
 		Color c = Color.WHITE;
-		for (int i= 0; i< 15; i++) {
-			for (int j= 0; j< 15; j++) {
-				char y = alphCol.charAt(i);
-				String coordN = Character.toString(y) + j;
-				String cc = ctrl.getCurrentJ().getGrid1().xyToString(i, j);
-				String val = "";
-				if (moove == true) { val = "ii"; }
-				else if (moove == false) { val = grid1[i][j]; }	
-				
+		
+		for (int i = 0; i < ctrl.nLine; i++) {
+		    for (int j = 0; j < ctrl.nCol; j++) {
+		    	char y = alphCol.charAt(i);
+				String coord = Character.toString(y) + j;
+				String val = ctrl.getCurrentJ().getGrid1().getCase(coord);
 				if (val == "xx") { c = Color.RED;} 
 				if (val == "tt") { c = Color.BLUE;} 
 				if (val == "oo") { c = Color.GREEN;} 
@@ -318,34 +326,50 @@ public class ViewPartie {
 				if (val == "++") { c = Color.PINK;} 
 				if (val == "**") { c = Color.YELLOW;} 
 				if (val == "  ") { c = Color.WHITE;} 
-				JButton b = new JButton(val);
-				b.setBackground(c);
-				b.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e){
-						tirerBttn.setEnabled(true);
-						deplacerBttn.setEnabled(true);
-						if (b.isSelected() == true) { b.setSelected(false); nbBttnSelect--;}
-						else {  b.setSelected(true); nbBttnSelect++;}
-						indNavire = ctrl.trouverNavireAvecCoord(ctrl.getCurrentJ(), cc);
-						navire = ctrl.getCurrentJ().getNavires().get(indNavire);
-						System.out.println(coordN + " " + indNavire + " " + navire.getDisposition() + "  " + cc);
-					}
+		        JButton b = new JButton(val);
+		        b.setBackground(c);
+		        b.addActionListener(new ActionListener() {
+		        	public void actionPerformed(ActionEvent e){
+						tirerBttn.setSelected(false);
+		        		if (b.getText() != "  ") {
+		        			tirerBttn.setEnabled(true);
+		        			deplacerBttn.setEnabled(true);
+		        			if (b.isSelected() == true) { b.setSelected(false);}
+		        			else {  b.setSelected(true);}
+		        			indNavire = ctrl.trouverNavireAvecCoord(ctrl.getCurrentJ(), coord);
+		        			navire = ctrl.getCurrentJ().getNavires().get(indNavire);
+		        			System.out.println(coord + " " + indNavire + " " + navire.getDisposition());
+		        		}
+		        		else {
+		        			deplacerDroite.setEnabled(false);
+		    				deplacerGauche.setEnabled(false);
+		    				deplacerHaut.setEnabled(false);
+		    				deplacerBas.setEnabled(false);
+		    				tirerBttn.setEnabled(false);
+		    				deplacerBttn.setEnabled(false);
+		        		}
+	        			coordLab.setText(coord);
+		        	}
 				});
+		        
 				panel_2.add(b);
-			}
+		    }
 		}
 	}
 	
-	public void setGrid2() {
+	public void setGrid2(boolean tirerbool) {
+		panel_3 = new JPanel();
 		panel_3.setPreferredSize(new Dimension(400,400));
 		panel_3.setBackground(new Color(9, 10, 11));
 		frmNavalBattle.getContentPane().add(panel_3, BorderLayout.EAST);
-		panel_3.setLayout(new GridLayout(15, 15, 0, 0));
+		GridLayout grid = new GridLayout(ctrl.nLine, ctrl.nCol, 0, 0);
+		panel_3.setLayout(grid);
+
 		Color c = Color.WHITE;
-		for (int i= 0; i< 15; i++) {
-			for (int j= 0; j< 15; j++) {
-				char y = alphCol.charAt(j);
-				String coordN = Character.toString(y) + i;
+		for (int i= 0; i< ctrl.nLine; i++) {
+			for (int j= 0; j< ctrl.nCol; j++) {
+				char yc = alphCol.charAt(j);
+				String coordC = Character.toString(yc) + j;
 				String val = grid2[j][i];
 				if (val == "xx") { c = Color.RED;} 
 				if (val == "tt") { c = Color.BLUE;} 
@@ -355,21 +379,45 @@ public class ViewPartie {
 				if (val == "**") { c = Color.YELLOW;} 
 				if (val == "  ") { c = Color.WHITE;} 
 				JButton b = new JButton(val);
+				String cc = ctrl.getCurrentJ().getGrid2().xyToString(j,i);//Integer.toString(i) + Integer.toString(j);
 				b.setBackground(c);
 				b.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e){
-						tirerBttn.setEnabled(true);
-						deplacerBttn.setEnabled(true);
-						if (b.isSelected() == true) { b.setSelected(false); nbBttnSelect--;}
-						else {  b.setSelected(true); nbBttnSelect++;}
-						System.out.println(coordN);
-						indNavire = ctrl.trouverNavireAvecCoord(ctrl.getCurrentJ(), coordN);
-						//navire = ctrl.getCurrentJ().getNavires().get(indNavire);
+						if (tirerBttn.isSelected() == true) {
+							deplacerBttn.setSelected(false);
+							cibleLab.setText(cc);
+							if (ctrl.getCurrentJ().getGrid2().getCase(cc) == "  ") {
+							//if (b.getText() == "  ") {
+								b.setText("tt");
+							}
+							else {
+								b.setText("xx");
+							}
+						}
+						mssgbox.setText("TIR EFFECTUE");
+						/*int ind = ctrl.trouverNavireAvecCoord(ctrl.getEnnemy(), coordCible);
+						if (ind >= 0) {cibleNavire = ctrl.getEnnemy().getNavires().get(ind);}
+	        			System.out.println(coordC + " " + ind);*/
 					}
 				});
 				panel_3.add(b);
 			}
 		}
+	}
+	
+	
+	public void deroulement() {
+		boolean fini = false;
+		/*while (fini == false) {
+			setGrid1(false);
+			setGrid2(false);
+			fini = ctrl.nbCaseNavire == ctrl.getEnnemy().getCasesNaviresTouches().size();
+			
+			ctrl.switchJ();
+		}*/
+		setGrid1(false);
+		setGrid2(false);
+		fini = ctrl.nbCaseNavire == ctrl.getEnnemy().getCasesNaviresTouches().size();
 	}
 
 }

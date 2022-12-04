@@ -33,7 +33,7 @@ public class ViewAcceuil {
 
 		nouvPartBttn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				ViewPartie newp = new ViewPartie(false);
+				ViewPartie newp = new ViewPartie(true);
 				newp.getFrame().setVisible(true);
 				frmNavalBattle.dispose();
 			}

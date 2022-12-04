@@ -19,7 +19,9 @@ public class Joueur {
 	} 
 	
 	
-	public Grille1 getGrid1() { return this.grid1; }	
+	public Grille1 getGrid1() { return this.grid1; }
+	public void setGrid1(Grille1 g) { this.grid1 = g; }	
+
 
 	public Grille2 getGrid2() { return this.grid2; }
 

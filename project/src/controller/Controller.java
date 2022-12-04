@@ -18,9 +18,9 @@ import java.io.IOException;
 
 
 public class Controller {
-	int nLine = 15; 
-	int nCol = 15; 
-	int nbCaseNavire;
+	public int nLine = 15; 
+	public int nCol = 15; 
+	public int nbCaseNavire;
 	String alph = "abcdefghijklmnopqrstuvwxyz";
 	Joueur j1; 
 	Joueur j2;
@@ -81,6 +81,26 @@ public class Controller {
 	};
 
 	public Joueur getCurrentJ() { return this.currentj; }
+	
+	public Joueur getEnnemy() { 
+		if (this.currentj == this.j1) {
+			return this.j2; 
+		}
+		if (this.currentj == this.j2) {
+			return this.j1; 
+		}
+		return null;
+	}
+	
+	public void switchJ() { 
+		if (this.currentj == this.j1) {
+			this.currentj = this.j2; 
+		}
+		if (this.currentj == this.j2) {
+			this.currentj = this.j1; 
+		}
+	}
+	
 	public Joueur getJ1() { return this.j1; }
 	public Joueur getJ2() { return this.j2; }
 	
