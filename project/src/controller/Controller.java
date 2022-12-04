@@ -231,7 +231,7 @@ public class Controller {
 
 		// ON NE PEUT PAS DEPLACER UN NAVIRE TOUCHE 
 		if (navireADeplacer.getCasesTouchees().size() != 0) { 
-			if (j.getName() != "ordi") { System.out.print("\n!!! NAVIRE TOUCHE, DEPLACEMENT IMPOSSIBLE !!!"); }
+			if (j.getName() != "ordi") { System.out.print("\n!!! NAVIRE TOUCHE; DEPLACEMENT IMPOSSIBLE; EFFECTUER UN TIR !!!"); }
 			return false; 
 		}
 
@@ -501,7 +501,6 @@ public class Controller {
 
 		// CREATION DU NOUVEAU FICHIER DE SAUVEGARDE ET VERIFICATION
 		try {		
-
 			File f = new File ("../../resources/sauvegarde/" + "save"+ (nbFich+1) +".txt");
 			FileWriter fw = new FileWriter(f.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);

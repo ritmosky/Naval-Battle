@@ -43,17 +43,23 @@ public class ViewAcceuil {
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		String pwd = System.getProperty("user.dir");
 		System.out.println("\n\n Repertoire courant : " + pwd);
-		lblNewLabel_1.setIcon(new ImageIcon("../../resources/sauvegarde/imgAcceuil.jpg"));
+		lblNewLabel_1.setIcon(new ImageIcon("../../resources/image/imgAcceuil.jpg"));
 		
 		JButton chargPartBttn = new JButton("Charger Partie");
+		chargPartBttn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				ViewCharger charg = new ViewCharger();
+				charg.getFrame().setVisible(true);
+				frmNavalBattle.dispose();
+			}
+		});
 		
 		JButton aideBttn = new JButton("Afficher Aide");
 		GroupLayout groupLayout = new GroupLayout(frmNavalBattle.getContentPane());
-		
 		aideBttn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				ViewAide acc = new ViewAide();
-				acc.getFrame().setVisible(true);
+				ViewAide aide = new ViewAide();
+				aide.getFrame().setVisible(true);
 				frmNavalBattle.dispose();
 			}
 		});

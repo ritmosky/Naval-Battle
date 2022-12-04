@@ -3,7 +3,11 @@ import javax.swing.JFrame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.awt.Color;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
@@ -41,7 +45,8 @@ public class ViewPartie {
 	
 	public ViewPartie(boolean newPartie){ 
 		this.ctrl = new Controller();
-		ctrl.DistribuerNavire(ctrl.getJ1());
+		if (newPartie == false) { ctrl.DistribuerNavire(ctrl.getJ1()); }
+		
 		ctrl.DistribuerNavire(ctrl.getJ2());
 		ctrl.setGrid2(ctrl.getJ1(), ctrl.getJ2());	
 		
@@ -49,13 +54,27 @@ public class ViewPartie {
 		grid1 = ctrl.getCurrentJ().getGrid1().getCases();
 		grid2 = ctrl.getCurrentJ().getGrid2().getCases();
 
-		if (newPartie == true) { initialize(); }
-		else if (newPartie == false) { 
-			initialize(); 
-			setGrid1(false);setGrid2();
-		}
+		initialize(); 
+		setGrid1(false);
+		setGrid2();
+
 	}
 
+	/*/ RECUPERATION DES DONNEES ET INITIALISATION DE LA GRILLE 1 DU JOUEUR 1
+				while ((line = in.readLine())!= null) {
+					Navire N = this.lineToNavire(line);
+					navires.add(N);
+					this.j1.addNavire(N);
+					String symbole = N.getSymbole();
+					for (String c: N.getCasesNavire()) {
+						if (N.getCasesTouchees().contains(c)) { 
+							this.j1.getGrid1().setCase("xx", c);
+							int indN = this.trouverNavireAvecCoord(this.j1, c);
+							this.j1.addCasesNaviresTouches(c, indN);
+						}
+						else { this.j1.getGrid1().setCase(symbole, c); }
+					}
+				}*/
 	
 	public JFrame getFrame() { return this.frmNavalBattle; }
 	/**
@@ -139,9 +158,39 @@ public class ViewPartie {
 		
 		quitBttn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
+				File doss = new File("../../resources/sauvegarde/"); 
+				File f = new File("");
+				int nbFich = 0;
+				for (File fich : doss.listFiles()) { 
+					if(fich.getName().startsWith("save")) {
+						nbFich++;
+					}
+				}
+
+				try {		
+					f = new File ("../../resources/sauvegarde/" + "save"+ (nbFich+1) +".txt");
+					FileWriter fw = new FileWriter(f.getAbsoluteFile());
+					BufferedWriter bw = new BufferedWriter(fw);
+					// ECRITURE DANS LE FICHIER
+					for (Navire N: ctrl.getJ1().getNavires()) {
+						String line = N.getName() + "," + N.getDisposition() + "," + !N.estCoule();
+						for (String uneCase: N.getCasesNavire()) {
+							line += ",";
+							line += uneCase;
+							if (ctrl.getJ1().getGrid1().estCaseNavireTouchee(uneCase)) { line += "x"; } 
+						}
+						line += "\n";
+						bw.write(line);
+					}	
+					bw.close();
+				} catch (Exception ex) { System.err.println(ex); }
+				
+				mssgbox.setText("PARTIE ENREGISTREE DANS => " + f.getName());
+				try { TimeUnit.SECONDS.sleep(3); } catch(Exception ex) { System.out.println(ex); }
+				
+				frmNavalBattle.dispose();
 				ViewAcceuil acc = new ViewAcceuil();
 				acc.getFrame().setVisible(true);
-				frmNavalBattle.dispose();
 			}
 		});
 		
@@ -255,8 +304,8 @@ public class ViewPartie {
 		Color c = Color.WHITE;
 		for (int i= 0; i< 15; i++) {
 			for (int j= 0; j< 15; j++) {
-				char y = alphCol.charAt(j);
-				String coordN = Character.toString(y) + i;
+				char y = alphCol.charAt(i);
+				String coordN = Character.toString(y) + j;
 				String cc = ctrl.getCurrentJ().getGrid1().xyToString(i, j);
 				String val = "";
 				if (moove == true) { val = "ii"; }
