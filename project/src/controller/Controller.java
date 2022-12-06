@@ -241,8 +241,9 @@ public class Controller {
 	}
 
 
-	public boolean deplacerNavire(Joueur j, String navireCoord) {
+	public int deplacerNavire(Joueur j, String navireCoord) {
 		Scanner inDeplacer = new Scanner (System.in); 
+		boolean fait = false;
 		// NAVIRE A DEPLACER
 		String choice = "";
 		int indNavireADeplacer = this.trouverNavireAvecCoord(j, navireCoord);
@@ -252,7 +253,7 @@ public class Controller {
 		// ON NE PEUT PAS DEPLACER UN NAVIRE TOUCHE 
 		if (navireADeplacer.getCasesTouchees().size() != 0) { 
 			if (j.getName() != "ordi") { System.out.print("\n!!! NAVIRE TOUCHE; DEPLACEMENT IMPOSSIBLE; EFFECTUER UN TIR !!!"); }
-			return false; 
+			return -1; 
 		}
 
 		// DEPLACEMENT DU SOUS MARIN
@@ -277,12 +278,12 @@ public class Controller {
 			// DEPLACEMENT IMPOSSIBLE
 			if (newCoords == null) { 
 				if (j.getName()!="ordi") {System.out.println("!!! DEPLACEMENT IMPOSSIBLE; EFFECTUER UN TIR !!!");}
-				return false; 
+				return -1; 
 			}
 			// UPDATE DES NOUVELLES COORDONNEES DU NAVIRE DU JOUEUR
 			navireADeplacer.setCasesNavire(newCoords);
 			j.getNavires().set(indNavireADeplacer, navireADeplacer);
-			return true; 
+			return 1; 
 		}
 
 		// DEPLACEMENT HORIZONTAL
@@ -300,6 +301,16 @@ public class Controller {
 					choice = inDeplacer.nextLine();
 				} while (!choice.equals("2") && !choice.equals("3"));
 			}
+			newCoords = j.deplacer(navireADeplacer, choice);
+			// DEPLACEMENT IMPOSSIBLE
+			if (newCoords == null) { 
+				if (j.getName()!="ordi") {System.out.println("!!! DEPLACEMENT IMPOSSIBLE; EFFECTUER UN TIR !!!");}
+				return -1; 
+			}
+			// UPDATE DES NOUVELLES COORDONNEES DU NAVIRE DU JOUEUR
+			navireADeplacer.setCasesNavire(newCoords);
+			j.getNavires().set(indNavireADeplacer, navireADeplacer);
+			return 1;
 		}
 
 		// DEPLACEMENT VERTICAL
@@ -317,18 +328,20 @@ public class Controller {
 					choice = inDeplacer.nextLine();
 				} while (!choice.equals("0") && !choice.equals("1"));
 			}
+			newCoords = j.deplacer(navireADeplacer, choice);
+			// DEPLACEMENT IMPOSSIBLE
+			if (newCoords == null) { 
+				if (j.getName()!="ordi") {System.out.println("!!! DEPLACEMENT IMPOSSIBLE; EFFECTUER UN TIR !!!");}
+				return -1; 
+			}
+			// UPDATE DES NOUVELLES COORDONNEES DU NAVIRE DU JOUEUR
+			navireADeplacer.setCasesNavire(newCoords);
+			j.getNavires().set(indNavireADeplacer, navireADeplacer);
+			return 1;
 		}
-		newCoords = j.deplacer(navireADeplacer, choice);
-		// SI DEPLACEMENT IMPOSSIBLE
-		if (newCoords == null) { 
-			if (j.getName()!="ordi") {System.out.println("!!! DEPLACEMENT IMPOSSIBLE; EFFECTUER UN TIR !!!");}
-			return false; 
-		} 
-	
-		// UPDATE DES NOUVELLES COORDONNEES DU NAVIRE DU JOUEUR
-		navireADeplacer.setCasesNavire(newCoords);
-		j.getNavires().set(indNavireADeplacer, navireADeplacer);
-		return true;
+		//System.out.println("--------- avant deplacement " + navireADeplacer.getCasesNavire().toString());
+		//System.out.println("--------- apres deplacement " + newCoords.toString()); 
+		return -1;
 	}
 
 
@@ -453,10 +466,13 @@ public class Controller {
 				System.out.println(coordR);
 				int action = randP.nextInt(2);
 				if (action == 0) { 
-					System.out.print("\n\n##### ordi a deplacer navire de coord: " + coordR); deplacementFait = this.deplacerNavire(currentJ, coordR); 
+					System.out.print("\n\n##### ordi a deplacer navire de coord: " + coordR); 
+					int f = this.deplacerNavire(currentJ, coordR); 
+					deplacementFait = f == 1;
 				}
 				if (action == 1 || deplacementFait == false) { 
-					System.out.print("\n\n##### ordi a tirer avec navire de coord: " + coordR); this.tirerSurNavire(currentJ, ennemi, coordR); 
+					System.out.print("\n\n##### ordi a tirer avec navire de coord: " + coordR); 
+					this.tirerSurNavire(currentJ, ennemi, coordR); 
 				}
 			}
 
@@ -478,14 +494,17 @@ public class Controller {
 				do {
 					System.out.println("\n\n- DEPLACER LE NAVIRE, TAPEZ 1");
 					System.out.print("- TIRER AVEC LE NAVIRE, TAPEZ 2");
-					System.out.print("\n- QUITTER/SAVE, TAPER 3");
+					System.out.print("\n- QUITTER/SAVE, TAPER qq");
 					System.out.print("\nCHOIX => ");
 					choice = inAction.nextLine();
-				} while(choice.equals("1") == false && choice.equals("2") == false && choice.equals("3") == false);
+				} while(choice.equals("1") == false && choice.equals("2") == false && choice.equals("qq") == false);
 				// EXECUTER ACTION
-				if (choice.equals("1") == true) { deplacementFait = this.deplacerNavire(currentJ, coord); }
-				else if (choice.equals("2") == true /*|| deplacementFait == false*/) { this.tirerSurNavire(currentJ, ennemi, coord); }
-				else if (choice.equals("3") == true) { this.sauvegarderPartie(currentJ); }
+				if (choice.equals("1") == true) { 
+					int f = this.deplacerNavire(currentJ, coord); 
+					deplacementFait = f == 1;
+				}
+				if (choice.equals("qq") == true) { this.sauvegarderPartie(currentJ); }
+				if (choice.equals("2") == true || deplacementFait == false) { this.tirerSurNavire(currentJ, ennemi, coord); }
 			}
 
 			// PASSAGE AU PROCHAIN TOUR
@@ -540,6 +559,7 @@ public class Controller {
 			System.out.println("\n\n ---------- SAUVEGARDE TERMINEE ----------\n");
 		}
 		catch (Exception e) { System.err.println(e); }
+		System.exit(0);
 	}
 
 

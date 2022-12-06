@@ -36,19 +36,18 @@ public class MainMenu implements KeyListener {
 			Controller controller = new Controller();
 			switch(choice) { 
 			case "1": 
-				System.out.println("\n --------------------- NOUVELLE PARTIE ---------------------");
+				System.out.println("\n --------------------- NOUVELLE PARTIE ---------------------\n");
+				System.out.println("\n POUR QUITTER A TOUT MOMENT, TAPEZ qq");
 				controller.partie(false);
 				continue;		
 			case "2": 
-				System.out.println("\n --------------------- CHARGER PARTIE ---------------------");
+				System.out.println("\n --------------------- CHARGER PARTIE ---------------------\n");
+				System.out.println("\n POUR QUITTER A TOUT MOMENT, TAPEZ qq");
 				controller.chargerPartie();
 				continue;
 			case "3": 
 				System.out.println("\n --------------------- AFFICHER AIDE ---------------------");
 				continue;	
-			case "qq": 
-				System.out.println("\n --------------------- FIN --------------------- \n");
-				System.exit(0);	
 			}
 		}
 		in1.close();

@@ -253,21 +253,23 @@ public class ViewPartie {
 		deplacerBttn.setSelected(false);
 		deplacerBttn.setEnabled(false);
 		tirerBttn.setEnabled(false);
-		ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "0");
-		if (newCoords == null) {
-			mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
+		ArrayList<String> newCoords = ctrl.getCurrentJ().deplacer(navire, s);
+		if (newCoords != null) {
+			navire.setCasesNavire(newCoords);
+			ctrl.getCurrentJ().getNavires().set(indNavire, navire);
+			ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
+			grid2 = ctrl.getCurrentJ().getGrid2().getCases();
+			setGrid1(true);
+			if (s.equals("0")) { mssgbox.setText("DEPLACEMENT EFFECTUE EN HAUT"); }
+			if (s.equals("1")) { mssgbox.setText("DEPLACEMENT EFFECTUE EN BAS"); }
+			if (s.equals("2")) { mssgbox.setText("DEPLACEMENT EFFECTUE A GAUCHE"); }
+			if (s.equals("3")) { mssgbox.setText("DEPLACEMENT EFFECTUE A DROITE"); }
+			return;
 		}
-		navire.setCasesNavire(newCoords);
-		ctrl.getCurrentJ().getNavires().set(indNavire, navire);
-		ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
-		grid2 = ctrl.getCurrentJ().getGrid2().getCases();
-		setGrid1(true);
-		
-		if (s.equals("0")) { mssgbox.setText("DEPLACEMENT EFFECTUE EN HAUT"); }
-		if (s.equals("1")) { mssgbox.setText("DEPLACEMENT EFFECTUE EN BAS"); }
-		if (s.equals("2")) { mssgbox.setText("DEPLACEMENT EFFECTUE A GAUCHE"); }
-		if (s.equals("3")) { mssgbox.setText("DEPLACEMENT EFFECTUE A DROITE"); }
+		mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
 	}
+	
+	
 	public void setGrid1(boolean moovebool) {
 		panel_2 = new JPanel();
 		panel_2.setPreferredSize(new Dimension(400,400));
@@ -275,7 +277,7 @@ public class ViewPartie {
 		frmNavalBattle.getContentPane().add(panel_2, BorderLayout.WEST);
 		GridLayout grid = new GridLayout(ctrl.nLine, ctrl.nCol, 0, 0);
 		panel_2.setLayout(grid);
-		//ctrl.afficher2Grilles(ctrl.getCurrentJ(),ctrl.getJ2(),null);
+		ctrl.afficher2Grilles(ctrl.getCurrentJ(),ctrl.getJ2(),null);
 		Color c = Color.WHITE;
 		
 		for (int i = 0; i < ctrl.nLine; i++) {

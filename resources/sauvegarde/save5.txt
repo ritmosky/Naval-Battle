@@ -1,0 +1,10 @@
+CROISEUR,verticale,true,h12,g12,f12,e12,d12
+CROISEUR,horizontale,true,j8,j9,j10,j11,j12
+CUIRASSE,horizontale,true
+DESTROYER,horizontale,true,m8,m9,m10
+DESTROYER,horizontale,true,c9,c8,c7
+DESTROYER,horizontale,true,o5,o6,o7
+SOUSMARIN,horizontale,true,i11
+SOUSMARIN,verticale,true,k11
+SOUSMARIN,verticale,true,i8
+SOUSMARIN,horizontale,true,n10
