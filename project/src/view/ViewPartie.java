@@ -118,22 +118,7 @@ public class ViewPartie {
 		panel_2.add(deplacerHaut);
 		deplacerHaut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				deplacerHaut.setEnabled(false);
-				deplacerDroite.setEnabled(false);
-				deplacerGauche.setEnabled(false);
-				deplacerBas.setEnabled(false);
-				ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "0");
-				if (newCoords == null) {
-					mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
-					deplacerBttn.setEnabled(false);
-					tirerBttn.setEnabled(true);
-				}
-				navire.setCasesNavire(newCoords);
-				ctrl.getCurrentJ().getNavires().set(indNavire, navire);
-				ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
-				grid2 = ctrl.getCurrentJ().getGrid2().getCases();
-				setGrid1(true);
-				mssgbox.setText("DEPLACEMENT EFFECTUE A HAUT");
+				setDeplacement("0");
 			}
 		});
 		
@@ -141,22 +126,7 @@ public class ViewPartie {
 		panel.add(deplacerBas);
 		deplacerBas.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				deplacerBas.setEnabled(false);
-				deplacerDroite.setEnabled(false);
-				deplacerGauche.setEnabled(false);
-				deplacerHaut.setEnabled(false);
-				ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "1");
-				if (newCoords == null) {
-					mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
-					deplacerBttn.setEnabled(false);
-					tirerBttn.setEnabled(true);
-				}
-				navire.setCasesNavire(newCoords);
-				ctrl.getCurrentJ().getNavires().set(indNavire, navire);
-				ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
-				grid2 = ctrl.getCurrentJ().getGrid2().getCases();
-				setGrid1(true);
-				mssgbox.setText("DEPLACEMENT EFFECTUE A BAS");
+				setDeplacement("1");
 			}
 		});
 		
@@ -164,22 +134,8 @@ public class ViewPartie {
 		panel.add(deplacerGauche);
 		deplacerGauche.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				deplacerGauche.setEnabled(false);
-				deplacerDroite.setEnabled(false);
-				deplacerHaut.setEnabled(false);
-				deplacerBas.setEnabled(false);
-				ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "2");
-				if (newCoords == null) {
-					mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
-					deplacerBttn.setEnabled(false);
-					tirerBttn.setEnabled(true);
-				}
-				navire.setCasesNavire(newCoords);
-				ctrl.getCurrentJ().getNavires().set(indNavire, navire);
-				ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
-				grid2 = ctrl.getCurrentJ().getGrid2().getCases();
-				setGrid1(true);
-				mssgbox.setText("DEPLACEMENT EFFECTUE A GAUCHE");
+				setDeplacement("2");
+
 			}
 		});
 		
@@ -187,22 +143,7 @@ public class ViewPartie {
 		panel.add(deplacerDroite);
 		deplacerDroite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				deplacerDroite.setEnabled(false);
-				deplacerGauche.setEnabled(false);
-				deplacerHaut.setEnabled(false);
-				deplacerBas.setEnabled(false);
-				ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "3");
-				if (newCoords == null) {
-					mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
-					deplacerBttn.setEnabled(false);
-					tirerBttn.setEnabled(true);
-				}
-				navire.setCasesNavire(newCoords);
-				ctrl.getCurrentJ().getNavires().set(indNavire, navire);
-				ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
-				grid2 = ctrl.getCurrentJ().getGrid2().getCases();
-				setGrid1(true);
-				mssgbox.setText("DEPLACEMENT EFFECTUE A DROITE");
+				setDeplacement("3");
 			}
 		});
 		
@@ -304,6 +245,29 @@ public class ViewPartie {
 	}
 	
 	
+	public void setDeplacement(String s) {
+		deplacerHaut.setEnabled(false);
+		deplacerDroite.setEnabled(false);
+		deplacerGauche.setEnabled(false);
+		deplacerBas.setEnabled(false);
+		deplacerBttn.setSelected(false);
+		deplacerBttn.setEnabled(false);
+		tirerBttn.setEnabled(false);
+		ArrayList<String> newCoords =ctrl.getCurrentJ().deplacer(navire, "0");
+		if (newCoords == null) {
+			mssgbox.setText("DEPLACEMENT IMPOSSIBLE, TIRER SUR UNE CASE ENNEMIE");
+		}
+		navire.setCasesNavire(newCoords);
+		ctrl.getCurrentJ().getNavires().set(indNavire, navire);
+		ctrl.getCurrentJ().setGrid1(ctrl.getCurrentJ().getGrid1());
+		grid2 = ctrl.getCurrentJ().getGrid2().getCases();
+		setGrid1(true);
+		
+		if (s.equals("0")) { mssgbox.setText("DEPLACEMENT EFFECTUE EN HAUT"); }
+		if (s.equals("1")) { mssgbox.setText("DEPLACEMENT EFFECTUE EN BAS"); }
+		if (s.equals("2")) { mssgbox.setText("DEPLACEMENT EFFECTUE A GAUCHE"); }
+		if (s.equals("3")) { mssgbox.setText("DEPLACEMENT EFFECTUE A DROITE"); }
+	}
 	public void setGrid1(boolean moovebool) {
 		panel_2 = new JPanel();
 		panel_2.setPreferredSize(new Dimension(400,400));
