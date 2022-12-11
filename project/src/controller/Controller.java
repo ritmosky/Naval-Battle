@@ -81,7 +81,8 @@ public class Controller {
 	};
 
 	public Joueur getCurrentJ() { return this.currentj; }
-	
+	public void setCurrentJ(Joueur jj) { this.currentj = jj; }
+
 	public Joueur getEnnemy() { 
 		if (this.currentj == this.j1) {
 			return this.j2; 
@@ -92,14 +93,7 @@ public class Controller {
 		return null;
 	}
 	
-	public void switchJ() { 
-		if (this.currentj == this.j1) {
-			this.currentj = this.j2; 
-		}
-		if (this.currentj == this.j2) {
-			this.currentj = this.j1; 
-		}
-	}
+
 	
 	public Joueur getJ1() { return this.j1; }
 	public Joueur getJ2() { return this.j2; }
@@ -153,7 +147,7 @@ public class Controller {
 			j.getGrid1().placerNavire(N);
 		}
 	}
-
+	
 
 	public void setGrid2(Joueur J1, Joueur J2) {
 		Grille2 grid2J1 = J1.getGrid2();
@@ -211,7 +205,7 @@ public class Controller {
 					if (grid2CurrentJ.getCase(coord) == "  ") {System.out.print("\u001B[45m" + "  " + "\033[0m");}
 					if (grid2CurrentJ.getCase(coord) != "  " && !coord.equals(casesEclairees.get(0))) {System.out.print("\u001B[45m" + "ff" + "\033[0m");}
 				}
-				else { System.out.print(coul + grid2CurrentJ.getCase(coord) + "\033[0m");	}
+				else { System.out.print(coul + "  " /*grid2CurrentJ.getCase(coord)*/ + "\033[0m");	}
 				System.out.print("|");		
 			}
 			System.out.print("\n");
@@ -247,6 +241,7 @@ public class Controller {
 		// NAVIRE A DEPLACER
 		String choice = "";
 		int indNavireADeplacer = this.trouverNavireAvecCoord(j, navireCoord);
+		if (indNavireADeplacer == -1) { return -1; }
 		Navire navireADeplacer = j.getNavires().get(indNavireADeplacer);
 		ArrayList<String> newCoords = new ArrayList<String>();
 
@@ -257,7 +252,6 @@ public class Controller {
 		}
 
 		// DEPLACEMENT DU SOUS MARIN
-		System.out.println("\nSENS DE DEPLACEMENT");
 		if (navireADeplacer.getName() == "SOUSMARIN") { 		
 			// DEPLACEMENT PAR L ORDINATEUR
 			if (j.getName() == "ordi") {
@@ -339,8 +333,6 @@ public class Controller {
 			j.getNavires().set(indNavireADeplacer, navireADeplacer);
 			return 1;
 		}
-		//System.out.println("--------- avant deplacement " + navireADeplacer.getCasesNavire().toString());
-		//System.out.println("--------- apres deplacement " + newCoords.toString()); 
 		return -1;
 	}
 
@@ -400,9 +392,9 @@ public class Controller {
 			}
 		}
 
-		// PREMIER TIR DU DESTROYER ------------------------------------ //////////////////////////////////////////////////::
+		// PREMIER TIR DU DESTROYER
 		ArrayList<String> casesEclairees = new ArrayList<>();
-		if (j.getNavires().get(indexNavireChoisi).getName() == "DESTROYER" && j.getNavires().get(indexNavireChoisi).getTirFusee() == false) {
+		if (j.getNavires().get(indexNavireChoisi).getName() == "DESTROYER" && j.getNavires().get(indexNavireChoisi).getTirFusee() == false && !j.getName().equals("ordi")) {
 			for (int x= tabxy[0]; x< tabxy[0]+4; x++) {
 				for (int y= tabxy[1]; y< tabxy[1]+4; y++) {
 					if (x<0 || y<0 || y>=this.nLine || x>=this.nCol) { continue; }
@@ -411,27 +403,69 @@ public class Controller {
 				}
 			}
 			j.getNavires().get(indexNavireChoisi).tirFusee();
-			if (j.getName() != "ordi") {System.out.println("\n !!! PREMIER TIR DU DESTROYER, AFFICHAGE DE LA GRILLE PENDANT 5 SECONDES !!!");}
+			if (j.getName() != "ordi") {
+				System.out.println("\n !!! PREMIER TIR DU DESTROYER, AFFICHAGE DE LA GRILLE PENDANT 5 SECONDES !!!");}
 			this.afficher2Grilles(j, ennemy, casesEclairees);
 			for (int i = 1; i < 5; i++) {try { TimeUnit.SECONDS.sleep(1);} catch(Exception e) {System.out.println(e); }}
 			if (j.getName() != "ordi") {System.out.println("\n !!! FIN DU TIR DE LA FUSEE ECLAIRANTE !!!");}
 			b = true;
 		}
-		
-		if (ennemy.gotNavireCoule() == true && b == true) {
-			ArrayList<Integer> l = ennemy.getIndNavireCoule();
-			if (ennemy.getName() == "ordi") { System.out.println("\n !!! NAVIRE COULE !!!"); }
-			if (ennemy.getName() != "ordi") { System.out.println("\n !!! WARNING NAVIRE COULE !!!"); }
-		}
 		return b;
 	}
 
 
+	public void actuNavireTouchee(Joueur j, Joueur ennemy) {
+		for (String Unecase: ennemy.getCasesNaviresTouches()) {
+			int indN = this.trouverNavireAvecCoord(ennemy, Unecase);
+			if (indN==-1) { continue; }
+			else { ennemy.addCasesNaviresTouches(Unecase, indN); }
+		}
+	}
+	
+	
+	public boolean tirerGraphique(Joueur j, Joueur ennemy, int indN, String coordCible) {
+		boolean b = false;
+		int pssc = j.getNavires().get(indN).getPuissance();
+		Grille grid1Ennemy = ennemy.getGrid1();
+		Grille grid2 = j.getGrid2();
+		int[] tabxy = grid2.stringToXY(coordCible); 
+
+		
+		if (grid2.estCaseNavire(coordCible) == false) { grid1Ennemy.setCase("tt", coordCible); --pssc;}
+		if (grid2.estCaseNavire(coordCible) == true) { 
+			int indCN = this.trouverNavireAvecCoord(ennemy, coordCible);
+			ennemy.addCasesNaviresTouches(coordCible, indCN);
+			grid1Ennemy.setCase("xx", coordCible); 
+			b = true; 
+			--pssc;
+		}
+		for (int x= tabxy[0]-1; x<= tabxy[0]+1; x++) {
+			for (int y= tabxy[1]-1; y<= tabxy[1]+1; y++) {
+				if (pssc != 0) {
+					if (x<0 || y<0 || y >= this.nLine || x >= this.nCol) { continue; }
+					String c = grid2.xyToString(x, y);
+					if (c.equals(coordCible) == false) {
+						int indEnnemy = this.trouverNavireAvecCoord(ennemy, c);
+						if (indEnnemy > -1) { ennemy.addCasesNaviresTouches(c, indEnnemy); }
+						if (grid2.estCaseNavire(c) == false) { grid1Ennemy.setCase("tt", c);}
+						if (grid2.estCaseNavire(c) == true) { grid1Ennemy.setCase("xx", c); b = true;}
+						pssc--;
+					}
+				}
+			}
+		}		
+		this.actuNavireTouchee(j,ennemy);
+		return b;
+	}
+	
 	// ------------------------ DEROULEMENT DE PARTIE ------------------------ //
 	public void partie(boolean partieChargee) {
 		// INITIALISATIONS DES GRILLES 
-		if (partieChargee == false) { this.DistribuerNavire(this.j1); }
-		this.DistribuerNavire(this.j2);
+		if (partieChargee == false) { 
+			this.DistribuerNavire(this.j1); 
+			this.DistribuerNavire(this.j2);
+		}
+		
 		this.setGrid2(this.j1, this.j2);
 		Joueur currentJ;
 		Joueur ennemi;
@@ -446,32 +480,33 @@ public class Controller {
 			this.currentj = currentJ;
 
 			// AFFICHAGE DES 2 GRILLES
-			System.out.print("\n\n--------------------------------------------------- TOUR DE " + currentJ.getName());
-			System.out.print(" ---------------------------------------------------\n\n");
-			this.afficher2Grilles(currentJ, ennemi, null);
+			System.out.print("\n\n--------------------- TOUR " + currentJ.getName() + " ---------------------\n\n");
+			if (currentJ.getName()!="ordi") { this.afficher2Grilles(currentJ, ennemi, null); }
 
 			// GESTION DU TOUR DE L ORDINATEUR
+			String coordR;
 			if (currentJ.getName() == "ordi") {
 				// CHOIX ALEATOIRE DE LA CASE D UN NAVIRE
 				Random randP = new Random();
-				int xR; 
+				/*int xR; 
 				int yR;
-				String coordR;
 				do { 
 					xR = randP.nextInt(this.nCol);
 					yR = randP.nextInt(this.nLine);
 					coordR = currentJ.getGrid1().xyToString(xR, yR);
-				} while (currentJ.getGrid1().estCaseNavire(coordR) == false);
-				// ACTION ALEATOIRE
-				System.out.println(coordR);
+				} while (currentJ.getGrid1().estCaseNavire(coordR) == false);*/
+				int indNav = randP.nextInt(this.j2.getNavires().size());
+				int indCoord = randP.nextInt(this.j2.getNavires().get(indNav).getCasesNavire().size());
+				coordR = this.j2.getNavires().get(indNav).getCasesNavire().get(indCoord);
+				// ACTION ALEATOIRE System.out.println(coordR);
 				int action = randP.nextInt(2);
 				if (action == 0) { 
-					System.out.print("\n\n##### ordi a deplacer navire de coord: " + coordR); 
+					//System.out.print("\n\n##### ordi a deplacer navire de coord: " + coordR); 
 					int f = this.deplacerNavire(currentJ, coordR); 
 					deplacementFait = f == 1;
 				}
 				if (action == 1 || deplacementFait == false) { 
-					System.out.print("\n\n##### ordi a tirer avec navire de coord: " + coordR); 
+					//System.out.print("\n\n##### ordi a tirer avec navire de coord: " + coordR); 
 					this.tirerSurNavire(currentJ, ennemi, coordR); 
 				}
 			}
@@ -483,11 +518,14 @@ public class Controller {
 				int indNavire = -1;
 				String coord = "";
 				do {
-					System.out.print("\n\n- NAVIRE A UTILISER DANS GRILLE 1 : \nCHOIX => ");
+					System.out.print("\n\n- QUITTER/SAVE, TAPER qq");
+					System.out.print("\n- NAVIRE A UTILISER DANS GRILLE 1, TAPEZ LA CASE DU NAVIRE \nCHOIX => ");
 					Scanner innCoord = new Scanner (System.in); 
 					coord = innCoord.nextLine();
 		  			indNavire = this.trouverNavireAvecCoord(currentJ, coord);
-				} while(indNavire < 0);
+				} while(indNavire < 0 && !coord.equals("qq"));
+				if (coord.equals("qq") == true) { this.sauvegarderPartie(); }
+
 				// DEMANDER L'ACTION A EFFECTUER
 				Scanner inAction = new Scanner (System.in); 
 				String choice = "";
@@ -503,33 +541,27 @@ public class Controller {
 					int f = this.deplacerNavire(currentJ, coord); 
 					deplacementFait = f == 1;
 				}
-				if (choice.equals("qq") == true) { this.sauvegarderPartie(currentJ); }
+				if (choice.equals("qq") == true) { this.sauvegarderPartie(); }
 				if (choice.equals("2") == true || deplacementFait == false) { this.tirerSurNavire(currentJ, ennemi, coord); }
 			}
 
 			// PASSAGE AU PROCHAIN TOUR
 			this.setGrid2(currentJ, ennemi);
-			this.afficher2Grilles(currentJ, ennemi, null);
+			if (currentJ.getName()!="ordi") { this.afficher2Grilles(currentJ, ennemi, null); }
 			fini = this.nbCaseNavire == ennemi.getCasesNaviresTouches().size();
-			System.out.println("\nNB CASE COULE ENNEMI = "+ ennemi.getCasesNaviresTouches().size() + "/" + this.nbCaseNavire);
+			if (currentJ.getName()!= "ordi") { System.out.println("\nNB CASE COULE ENNEMI = "+ ennemi.getCasesNaviresTouches().size() + "/" + this.nbCaseNavire); }
 			if (fini == true) {
 				System.out.println("\n !!! FIN DE LA PARTIE, " + currentJ.getName() + " GAGNE !!! ");
 				System.exit(0);
 			}
-			if (currentJ.getName()!="ordi") {for (int i = 1; i < 5; i++) {
-				int sec = 5 - i;
-				System.out.println(sec);
-				try { TimeUnit.SECONDS.sleep(1); } catch(Exception e) { System.out.println(e); }
-			}}
+			if (currentJ.getName()!= "ordi") { try { TimeUnit.SECONDS.sleep(2); } catch(Exception e) { System.out.println(e); }}
 			tour++;	
 		}
 	}
 
 
 	// ------------------------ SAUVEGARDE UNE PARTIE ------------------------ //
-	public void sauvegarderPartie(Joueur j) {
-		System.out.print("\n\n----- SAUVEGARDE DE PARTIE ----- \n"); 
-
+	public void sauvegarderPartie() {
 		File doss = new File("../../resources/sauvegarde/"); 
 		int nbFich = 0;
 		for (File fich : doss.listFiles()) { 
@@ -537,62 +569,81 @@ public class Controller {
 				nbFich++;
 			}
 		}
-
 		// CREATION DU NOUVEAU FICHIER DE SAUVEGARDE ET VERIFICATION
 		try {		
 			File f = new File ("../../resources/sauvegarde/" + "save"+ (nbFich+1) +".txt");
 			FileWriter fw = new FileWriter(f.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
 
-			// ECRITURE DANS LE FICHIER
-			for (Navire N: j.getNavires()) {
+			// SAUVEGARDE POUR JOUEUR
+			bw.write(this.getJ1().getName() + "\n");
+			for (Navire N: this.getJ1().getNavires()) {
 				String line = N.getName() + "," + N.getDisposition() + "," + !N.estCoule();
 				for (String uneCase: N.getCasesNavire()) {
 					line += ",";
 					line += uneCase;
-					if (j.getGrid1().estCaseNavireTouchee(uneCase)) { line += "x"; } 
+					if (this.getJ1().getGrid1().estCaseNavireTouchee(uneCase)) { line += "x"; } 
 				}
 				line += "\n";
 				bw.write(line);
-			}	
+			}
+			bw.write("\n");
+			// SAUVEGARDE POUR ORDI
+			bw.write(this.getJ2().getName() + "\n");
+			for (Navire N: this.getJ2().getNavires()) {
+				String line = N.getName() + "," + N.getDisposition() + "," + !N.estCoule();
+				for (String uneCase: N.getCasesNavire()) {
+					line += ",";
+					line += uneCase;
+					if (this.getJ2().getGrid1().estCaseNavireTouchee(uneCase)) { line += "x"; } 
+				}
+				line += "\n";
+				bw.write(line);
+			}
 			bw.close();
 			System.out.println("\n\n ---------- SAUVEGARDE TERMINEE ----------\n");
 		}
 		catch (Exception e) { System.err.println(e); }
 		System.exit(0);
 	}
-
+	
 
 	// ------------------------ CHARGER UNE PARTIE ------------------------ //
-	public void chargerPartie() {
+	public void chargerPartie(boolean console, String nameF) {
 		// REPERTOIRE DE SAUVEGARDE
 		File doss = new File("../../resources/sauvegarde/"); 
 
 		// AFFICHER LES SAUVEGARDES DISPONIBLES
 		int nb = 0;
 		for (File fich : doss.listFiles()) { 
-			if(fich.getName().startsWith("save")) {
+			if(fich.getName().startsWith("save") && console==true) {
 				System.out.println("- " + fich.getName()); 
 				nb++;
 			}
 		}	
-		if (nb == 0) { 
-			System.out.println("\n !!! AUCUNE SAUVEGARDE TROUVEE !!!"); 
-			System.out.println("\n !!! NOUVELLE PARTIE !!!"); 
+		if (nb == 0 && console == true) { 
+			System.out.println("\n !!! AUCUNE SAUVEGARDE TROUVEE, NOUVELLE PARTIE !!!"); 
 			this.partie(false);
 		}
 
 		else {
-			// CHOIX DU FICHIER A CHARGER
-			Scanner inS = new Scanner (System.in); 
-			String name = "";
-			File nouvFich;
-			do {
-				System.out.print("\n=> Entrez le nom du fichier de sauvegarde : "); 
-				name = inS.nextLine();
-				nouvFich = new File ("../../resources/sauvegarde/" + name);
-			} while (nouvFich.exists() == false);
-
+			File nouvFich = new File("");
+			if (console == true) {
+				// CHOIX DU FICHIER A CHARGER
+				Scanner inS = new Scanner (System.in); 
+				String name = "";
+				// POUR CONSOLE
+				if (console == true) {
+					do {
+						System.out.print("\n=> Entrez le nom du fichier de sauvegarde : "); 
+						name = inS.nextLine();
+						nouvFich = new File ("../../resources/sauvegarde/" + name);
+					} while (nouvFich.exists() == false);
+				}
+			}
+			// POUR GRAPHIQUE
+			if (console == false) { nouvFich = new File ("../../resources/sauvegarde/" + nameF); }
+			
 			// LECTURE DU FICHIER
 			BufferedReader in = null;
 			ArrayList<Navire> navires = new ArrayList<Navire>();
@@ -601,24 +652,44 @@ public class Controller {
 				String line = "";
 
 				// RECUPERATION DES DONNEES ET INITIALISATION DE LA GRILLE 1 DU JOUEUR 1
+				String proprio = ""; 
 				while ((line = in.readLine())!= null) {
-					Navire N = this.lineToNavire(line);
-					navires.add(N);
-					this.j1.addNavire(N);
-					String symbole = N.getSymbole();
-					for (String c: N.getCasesNavire()) {
-						if (N.getCasesTouchees().contains(c)) { 
-							this.j1.getGrid1().setCase("xx", c);
-							int indN = this.trouverNavireAvecCoord(this.j1, c);
-							this.j1.addCasesNaviresTouches(c, indN);
+					if (!line.equals("ordi") && line.length() < 10) { proprio = "!ordi"; continue; }
+					if (line.equals("ordi") && line.length() < 10) { proprio = "ordi"; continue;}
+
+					if (!proprio.equals("ordi")) {
+						Navire N = this.lineToNavire(line);
+						//navires.add(N);
+						this.j1.addNavire(N);
+						String symbole = N.getSymbole();
+						for (String c: N.getCasesNavire()) {
+							if (N.getCasesTouchees().contains(c)) { 
+								this.j1.getGrid1().setCase("xx", c);
+								int indN = this.trouverNavireAvecCoord(this.j1, c);
+								this.j1.addCasesNaviresTouches(c, indN);
+							}
+							else { this.j1.getGrid1().setCase(symbole, c); }
 						}
-						else { this.j1.getGrid1().setCase(symbole, c); }
+					}
+					
+					if (proprio.equals("ordi")) {
+						Navire N = this.lineToNavire(line);
+						//navires.add(N);
+						this.j2.addNavire(N);
+						String symbole = N.getSymbole();
+						for (String c: N.getCasesNavire()) {
+							if (N.getCasesTouchees().contains(c)) { 
+								this.j2.getGrid1().setCase("xx", c);
+								int indN = this.trouverNavireAvecCoord(this.j2, c);
+								this.j2.addCasesNaviresTouches(c, indN);
+							}
+							else { this.j2.getGrid1().setCase(symbole, c); }
+						}
 					}
 				}
-
 			} catch (FileNotFoundException e) { System.out.println(e.getMessage()); }
 			catch (IOException e) { System.out.println(e.getMessage()); }
-			this.partie(true);
+			if (console == true) { this.partie(true);}
 		}
 	}
 
@@ -687,3 +758,5 @@ public class Controller {
 		return new Navire(0,0,"");
 	}
 }
+
+

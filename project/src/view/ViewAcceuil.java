@@ -12,6 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 
+/** 
+ * La classe implémente la vue concernant l'acceuil de l'application.
+ * @author OUEDRAOGO Taoufiq
+ * @author FONDELOT Timothee
+ * @author NSONGO David
+ * @author TAKOUGNADI Junior
+ */
 public class ViewAcceuil {
 
 	private JFrame frmNavalBattle;
@@ -20,6 +27,10 @@ public class ViewAcceuil {
 	
 	public JFrame getFrame() { return this.frmNavalBattle; }
 
+	/** 
+	 * La fonction permet d'initialiser la vue.
+	 * @return void
+	 */
 	private void initialize() {
 		frmNavalBattle = new JFrame();
 		frmNavalBattle.setResizable(false);
@@ -33,7 +44,7 @@ public class ViewAcceuil {
 
 		nouvPartBttn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				ViewPartie newp = new ViewPartie(true);
+				ViewPartie newp = new ViewPartie(true, null);
 				newp.getFrame().setVisible(true);
 				frmNavalBattle.dispose();
 			}
@@ -41,8 +52,6 @@ public class ViewAcceuil {
 		
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		String pwd = System.getProperty("user.dir");
-		System.out.println("\n\n Repertoire courant : " + pwd);
 		lblNewLabel_1.setIcon(new ImageIcon("../../resources/image/imgAcceuil.jpg"));
 		
 		JButton chargPartBttn = new JButton("Charger Partie");

@@ -10,19 +10,32 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 import javax.swing.JButton;
 
+/** 
+ * La classe implémente la vue concernant le chargement d'une nouvelle partie.
+ * @author OUEDRAOGO Taoufiq
+ * @author FONDELOT Timothee
+ * @author NSONGO David
+ * @author TAKOUGNADI Junior
+ */
 public class ViewCharger {
 
 	private JFrame frame;
 	private JButton chargBttn;
 	private JButton accBttn;
-	private JList list;
+	private JList<String> list;
 
+	/**
+	 * Constructeur
+	 */
 	public ViewCharger() {
 		initialize();
 	}
 
 	public JFrame getFrame() { return this.frame; }
 	
+	/** 
+	 * La fonction permet d'initialiser la vue.
+	 */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setResizable(false);
@@ -46,7 +59,7 @@ public class ViewCharger {
 			}
 		}
 
-		list = new JList(fichs);
+		list = new JList<String>(fichs);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		frame.getContentPane().add(list, BorderLayout.CENTER);
 		
@@ -56,14 +69,10 @@ public class ViewCharger {
 		if (nb == 0) { chargBttn.setEnabled(false); }
 		chargBttn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				String name = (String)list.getSelectedValue();
-				File nouvFich = new File ("../../resources/sauvegarde/" + name);
-				if (nouvFich.exists()) {
-					System.out.println(nouvFich.getName());
-					ViewPartie partie = new ViewPartie(true);
-					partie.getFrame().setVisible(true);
-					frame.dispose();				
-				}
+				String nameF = (String)list.getSelectedValue();
+				ViewPartie partie = new ViewPartie(false, nameF);
+				partie.getFrame().setVisible(true);
+				frame.dispose();
 			}
 		});
 		

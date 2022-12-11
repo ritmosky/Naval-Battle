@@ -38,4 +38,39 @@
 	</section>
 	<section name="RenameInformationPopup">
 	</section>
+	<section name="JavadocWizardDialog">
+		<item key="DIALOG_X_ORIGIN" value="308"/>
+		<item key="DIALOG_Y_ORIGIN" value="86"/>
+		<item key="DIALOG_WIDTH" value="824"/>
+		<item key="DIALOG_HEIGHT" value="528"/>
+		<item key="DIALOG_FONT_NAME" value="1|.AppleSystemUIFont|11.0|0|COCOA|1|.AppleSystemUIFont"/>
+	</section>
+	<section name="javadoc">
+		<item key="javadoc_command_history" value="/Users/taoufiq/.p2/pool/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.macosx.x86_64_17.0.5.v20221102-0933/jre/bin/javadoc"/>
+		<item key="fromStandard" value="true"/>
+		<item key="docletname" value=""/>
+		<item key="docletpath" value=""/>
+		<item key="access" value="public"/>
+		<item key="use" value="true"/>
+		<item key="author" value="true"/>
+		<item key="version" value="true"/>
+		<item key="nodeprecated" value="false"/>
+		<item key="nodeprecatedlist" value="false"/>
+		<item key="splitindex" value="true"/>
+		<item key="noindex" value="false"/>
+		<item key="notree" value="false"/>
+		<item key="nonavbar" value="false"/>
+		<item key="openinbrowser" value="true"/>
+		<item key="source" value="17"/>
+		<item key="antpath" value="/Users/taoufiq/Documents/java/Naval-Battle/project/src/javadoc.xml"/>
+		<item key="destdir" value="/Users/taoufiq/Documents/java/Naval-Battle/project/src/doc"/>
+		<item key="doctitle" value="Java FTP Client Utility API"/>
+		<section name="projects">
+			<section name="src">
+				<item key="href" value=""/>
+				<item key="destdir" value="/Users/taoufiq/Documents/java/Naval-Battle/project/src/doc"/>
+				<item key="antpath" value="/Users/taoufiq/Documents/java/Naval-Battle/project/src/javadoc.xml"/>
+			</section>
+		</section>
+	</section>
 </section>

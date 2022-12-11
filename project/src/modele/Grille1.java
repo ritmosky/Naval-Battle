@@ -2,12 +2,25 @@ package modele;
 import java.util.ArrayList;
 import java.util.Random;
 
-
+/** 
+ * La classe implémente la classe Grille1 contenant les navires du joueur actuelle.
+ * @author OUEDRAOGO Taoufiq
+ * @author FONDELOT Timothee
+ * @author NSONGO David
+ * @author TAKOUGNADI Junior
+ */
 public class Grille1 extends Grille {
 	public Grille1(String alpha, int l, int c) { 
 		super(alpha, l, c); 
 	}
 	
+	/**
+	 * La fonction retourne un boolan suivant que le navire peut se placer dans un sens donné.
+	 * @param coord coordonnée de la case
+	 * @ tailleNavire taille du navire
+	 * @param sens le sens de placement (descendant=0 ou ascendant=1, de la droite vers la gauche=2, de la gauche vers la droite=3)
+	 * @return boolean
+	 */
 	public boolean peutSePlacerSelonUnSens(String coord, int tailleNavire, int sens) {
 		int x = this.stringToXY(coord)[0];
 		int y = this.stringToXY(coord)[1];
@@ -55,9 +68,14 @@ public class Grille1 extends Grille {
 	}
 
 
-	// PERMET DE PLACER UN NAVIRE SUR LA GRILLE 1 SELON UN SENS DE PLACEMENT
-	// 0 = SENS DESCENDANT, 1 = ASCENDANT
-	// 2 = DE LA DROITE VERS LA GAUCHE, 3 = DE LA GAUCHE VERS LA DROITE
+	/**
+	 * La fonction permet de placer un navire sur la Grille1.
+	 * 0 = SENS DESCENDANT
+	 * 1 = ASCENDANT
+	 * 2 = DE LA DROITE VERS LA GAUCHE
+	 * 3 = DE LA GAUCHE VERS LA DROITE
+	 * @return boolean
+	 */
 	public void placerNavire(Navire N) {
 		String symbole = N.symbole;
 		String coord;
