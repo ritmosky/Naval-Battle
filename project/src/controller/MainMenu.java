@@ -5,7 +5,7 @@ import view.ViewAcceuil;
 
 
 /** 
- * La classe est utilisé pour le lancement du jeu.
+ * La classe est utilisé pour le lancement du jeu et contient le programme principal.
  * L'utilisateur pourra choisir de lancer l'application soit en mode console, soit en moe grapghique.
  * @author OUEDRAOGO Taoufiq
  * @author FONDELOT Timothee
@@ -16,8 +16,6 @@ public class MainMenu {
 
 	/** 
 	 * Fonction d'affichage des options.
-	 * @param none
-	 * @return void
 	 */
 	public void affichage() {
 
@@ -66,9 +64,8 @@ public class MainMenu {
 
 	
 	/** 
-	 * Programme principal de l'application
-	 * @param none
-	 * @return void
+	 * Programme principal de l'application pour lancer le jeu
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		Scanner inc = new Scanner (System.in);	

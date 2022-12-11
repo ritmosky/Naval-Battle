@@ -27,12 +27,13 @@ public class ViewAide {
 	public ViewAide() { initialize(); }
 
 	/**
-	 * 
+	 * retourne le frame de la vue
+	 * @return retourne le frame de la vue
 	 */
 	public JFrame getFrame() { return this.frame; }
 	 
 	/** 
-	 * La fonction permet d'initialiser la vue.
+	 * La fonction permet d'initialiser la vue
 	 */
 	private void initialize() {
 		frame = new JFrame();

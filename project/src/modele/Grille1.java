@@ -10,16 +10,23 @@ import java.util.Random;
  * @author TAKOUGNADI Junior
  */
 public class Grille1 extends Grille {
+	
+	/**
+	 * Constructeur
+	 * @param alpha lettres correspondantes aux colonnes
+	 * @param l nombre de ligne 
+	 * @param c nombre de colonne
+	 */
 	public Grille1(String alpha, int l, int c) { 
 		super(alpha, l, c); 
 	}
 	
 	/**
-	 * La fonction retourne un boolan suivant que le navire peut se placer dans un sens donné.
+	 * La fonction retourne un booléen suivant que le navire peut se placer dans un sens donné.
 	 * @param coord coordonnée de la case
-	 * @ tailleNavire taille du navire
+	 * @param tailleNavire taille du navire
 	 * @param sens le sens de placement (descendant=0 ou ascendant=1, de la droite vers la gauche=2, de la gauche vers la droite=3)
-	 * @return boolean
+	 * @return retourne un booléen suivant que le navire peut se placer dans un sens donné.
 	 */
 	public boolean peutSePlacerSelonUnSens(String coord, int tailleNavire, int sens) {
 		int x = this.stringToXY(coord)[0];
@@ -74,7 +81,7 @@ public class Grille1 extends Grille {
 	 * 1 = ASCENDANT
 	 * 2 = DE LA DROITE VERS LA GAUCHE
 	 * 3 = DE LA GAUCHE VERS LA DROITE
-	 * @return boolean
+	 * @param N le navire
 	 */
 	public void placerNavire(Navire N) {
 		String symbole = N.symbole;

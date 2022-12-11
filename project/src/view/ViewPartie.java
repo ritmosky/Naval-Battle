@@ -67,8 +67,10 @@ public class ViewPartie {
 	private final JLabel lblNewLabel_2 = new JLabel("|");
 	private final JLabel lblNewLabel_3 = new JLabel("   |   ");
 	
-	/*
+	/**
 	 * Constructeur
+	 * @param newPartie booléen indiquant si c'est une nouvelle partie ou non
+	 * @param nameSave nom du fichier de sauvegarde vers lequel charger la partie
 	 */
 	public ViewPartie(boolean newPartie, String nameSave){ 
 		this.ctrl = new Controller();
@@ -93,6 +95,10 @@ public class ViewPartie {
 		setGrid2();
 	}
 	
+	/** 
+	 * retourne le frame
+	 * @return retourne le frame de la vue
+	 */
 	public JFrame getFrame() { return this.frmNavalBattle; }
 	/**
 	 * @wbp.parser.entryPoint
@@ -138,8 +144,7 @@ public class ViewPartie {
 				tourOrdi();
 			}
 		});
-
-		
+	
 		panel.add(gridPanel);
 		panel.add(deplacerHaut);
 		
@@ -302,7 +307,8 @@ public class ViewPartie {
 
 	
 	/** 
-	 * La fonction permet d'effectuer le déplacement par le joueur.
+	 * La fonction permet d'effectuer le déplacement par le joueur selon un sens
+	 * @param s sens de déplacement
 	 */
 	public void setDeplacement(String s) {
 		deplacerHaut.setEnabled(false);
@@ -460,6 +466,7 @@ public class ViewPartie {
 
 	/** 
 	 * La fonction permet d'effectuer le premier tir de fusée du Destroyer.
+	 * @param coordCible coordonnée de la case ciblée par le tir
 	 */
 	public void fusee(String coordCible) {
 		Grille grid2J = ctrl.getCurrentJ().getGrid2();

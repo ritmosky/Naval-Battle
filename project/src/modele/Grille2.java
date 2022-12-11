@@ -9,6 +9,13 @@ package modele;
  * @author TAKOUGNADI Junior
  */
 public class Grille2 extends Grille {
+	
+	/**
+	 * Constructeur
+	 * @param alpha lettres correspondantes aux colonnes
+	 * @param l nombre de ligne 
+	 * @param c nombre de colonne
+	 */
 	public Grille2(String alpha, int l, int c) { 
 		super(alpha, l, c); 
 	}

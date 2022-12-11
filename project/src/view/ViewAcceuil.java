@@ -23,13 +23,19 @@ public class ViewAcceuil {
 
 	private JFrame frmNavalBattle;
 
+	/** 
+	 * Constructeur
+	 */
 	public ViewAcceuil() { initialize(); }
 	
+	/** 
+	 * retourne le frame
+	 * @return retourne le frame de la vue
+	 */
 	public JFrame getFrame() { return this.frmNavalBattle; }
 
 	/** 
 	 * La fonction permet d'initialiser la vue.
-	 * @return void
 	 */
 	private void initialize() {
 		frmNavalBattle = new JFrame();

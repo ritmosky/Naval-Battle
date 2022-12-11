@@ -16,16 +16,38 @@ import java.io.IOException;
 
 
 
-
+/** 
+ * Le Controller est la classe qui va gérer tout le déroulement du jeu.
+ * Elle contient des déclarations de dictionnaires contenant toutes les informations relatives aux différents navires.
+ * @author OUEDRAOGO Taoufiq
+ * @author FONDELOT Timothee
+ * @author NSONGO David
+ * @author TAKOUGNADI Junior
+ */
 public class Controller {
+	/**
+	 * nombre de ligne du jeu
+	 */
 	public int nLine = 15; 
+	
+	/**
+	 * nombre de colonne du jeu
+	 */
 	public int nCol = 15; 
+	
+	/**
+	 * nombre de case occupé par les navires
+	 */
 	public int nbCaseNavire;
+	
 	String alph = "abcdefghijklmnopqrstuvwxyz";
 	Joueur j1; 
 	Joueur j2;
 	Joueur currentj;
 	
+	/**
+	 * Dictionnaire contenant toutes les informations relatives au Cuitrasse.
+	 */
 	final HashMap<String, String> CUIRASSE = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
 	{
 		put("puissance", "9");
@@ -34,6 +56,9 @@ public class Controller {
 		put("nombre", "1");
 	}};
 
+	/**
+	 * Dictionnaire contenant toutes les informations relatives au Croiseur.
+	 */
 	final HashMap<String, String> CROISEUR = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
 	{
 		put("puissance", "4");
@@ -42,6 +67,9 @@ public class Controller {
 		put("nombre", "2");
 	}};
 
+	/**
+	 * Dictionnaire contenant toutes les informations relatives au Destroyer.
+	 */
 	final HashMap<String, String> DESTROYER = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
 	{
 		put("puissance", "1");
@@ -50,6 +78,9 @@ public class Controller {
 		put("nombre", "3");
 	}};
 
+	/**
+	 * Dictionnaire contenant toutes les informations relatives au Sous Marin.
+	 */
 	final HashMap<String, String> SOUSMARIN = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
 	{
 		put("puissance", "1");
@@ -59,6 +90,9 @@ public class Controller {
 		put("couleur", "4");
 	}}; 
 
+	/**
+	 * Dictionnaire contenant toutes les informations relatives au couleurs d'affichage.
+	 */
 	final HashMap<String, String> COULEUR = new HashMap<String, String>() {private static final long serialVersionUID = 1L;
 	{
 		put("xx", "\033[41m"); // rouge 
@@ -70,6 +104,9 @@ public class Controller {
 		put("  ", "\033[0;37m"); // blanc
 	}};
 	
+	/**
+	 * Constructeur
+	 */
 	public Controller() {
 		this.j1 = new Joueur("JOUEUR", this.alph.substring(0, this.nLine), this.nLine, this.nCol);
 		this.j2 = new Joueur("ordi", this.alph.substring(0, this.nLine), this.nLine, this.nCol);
@@ -80,9 +117,22 @@ public class Controller {
 		this.nbCaseNavire += Integer.parseInt(CUIRASSE.get("nombre"))*Integer.parseInt(CUIRASSE.get("taille"));
 	};
 
+	/**
+	 * retourne le joueur courant
+	 * @return retourne le joueur courant
+	 */
 	public Joueur getCurrentJ() { return this.currentj; }
+	
+	/**
+	 * permet de changer le joueur qui à la main
+	 * @param jj le joueur courant
+	 */
 	public void setCurrentJ(Joueur jj) { this.currentj = jj; }
 
+	/**
+	 * retourne le joueur adverse.
+	 * @return retourne le joueur ennemi (adverse)
+	 */
 	public Joueur getEnnemy() { 
 		if (this.currentj == this.j1) {
 			return this.j2; 
@@ -93,18 +143,33 @@ public class Controller {
 		return null;
 	}
 	
-
-	
+	/**
+	 * retourne le joueur 1
+	 * @return retourne le joueur 1
+	 */
 	public Joueur getJ1() { return this.j1; }
+	
+	/**
+	 * retourne le joueur 2
+	 * @return retourne le joueur 2
+	 */
 	public Joueur getJ2() { return this.j2; }
 	
+	/**
+	 * retourne le joueur qui à la main au tour p.
+	 * @param p le p-ième tour de jeu
+	 * @return retourne le joueur ayant la main au tour
+	 */
 	public Joueur getJoueurAt(int p) {
 		if (p == 0) { return this.j2; }
 		return this.j1;
 	}
 
 
-	// ------------------------ PLACEMENT DES NAVIRES ------------------------ //
+	/**
+	 * permet de distribuer les navires au joueur j
+	 * @param j le joueur
+	 */
 	public void DistribuerNavire(Joueur j) {
 		// CAS D UNE NOUVELLE PARTIE 
 		int nb = Integer.parseInt(this.CROISEUR.get("nombre"));
@@ -149,6 +214,11 @@ public class Controller {
 	}
 	
 
+	/**
+	 * permet de mettre à jour les Grille2 des joueurs.
+	 * @param J1 le joueur actuel
+	 * @param J2 le joueur adverse
+	 */
 	public void setGrid2(Joueur J1, Joueur J2) {
 		Grille2 grid2J1 = J1.getGrid2();
 		grid2J1.setCases(J2.getGrid1().getCases());
@@ -157,7 +227,12 @@ public class Controller {
 	}
 
 
-	// ------------------------ AFFICHAGE DES 2 GRILLES ------------------------ //
+	/**
+	 * permet d'afficher les grilles à chaque tour
+	 * @param currentPlayer le joueur actuelle
+	 * @param ennemi le joueur ennemi
+	 * @param casesEclairees mes cases dévoilées par le premier tir de fusée
+	 */
 	public void afficher2Grilles(Joueur currentPlayer, Joueur ennemi, ArrayList<String> casesEclairees) {
 		System.out.print("\n");
 		System.out.print("\t\t" + "  GRILLE 1" + "\t\t\t\t\t\t\t\t" + "  GRILLE 2\n\n\n");
@@ -221,8 +296,13 @@ public class Controller {
 	}
 
 
-	// ------------------------ DEPLACEMENT ------------------------ //
-	// RETOURNE LE NAVIRE CORRESPONDANT AUX COORDONNEES
+	/**
+	 * renvoie l'index du navire correspondant aux coordonnées en paramètre.
+	 * Si les coordonnées ne correspond à aucun navire du joueur alors elle retourne -1.
+	 * @param j le joueur actuelle
+	 * @param coord coordonnée du navire à chercher
+	 * @return index du navire dans la liste de navires du joueur
+	 */
 	public int trouverNavireAvecCoord(Joueur j, String coord) {
 		for (int i= 0; i< j.getNavires().size(); i++) {
 			Navire navire = j.getNavires().get(i);
@@ -234,7 +314,12 @@ public class Controller {
 		return -1;
 	}
 
-
+	/**
+	 * permet de déplacer un navire du joueur
+	 * @param j le joueur actuelle
+	 * @param navireCoord coordonnées d'une case du navire à déplacer
+	 * @return retourne un entier -1 si le déplacement est impossible ou 1 si il est possible
+	 */
 	public int deplacerNavire(Joueur j, String navireCoord) {
 		Scanner inDeplacer = new Scanner (System.in); 
 		boolean fait = false;
@@ -337,7 +422,13 @@ public class Controller {
 	}
 
 
-	// ------------------------ TIR ------------------------ //
+	/**
+	 * permet de tirer sur un navire
+	 * @param j le joueur actuelle
+	 * @param ennemy le joueur adverse
+	 * @param coord coordonnées d'une case du navire qui tire
+	 * @return retourne un booleen suivant que le tir a été efectué ou pas
+	 */
 	public boolean tirerSurNavire(Joueur j, Joueur ennemy, String coord) {
 		// NAVIRE QUI DOIT TIRER
 		int indexNavireChoisi = this.trouverNavireAvecCoord(j, coord);
@@ -413,7 +504,11 @@ public class Controller {
 		return b;
 	}
 
-
+	/**
+	 * permet d'actualiser les cases touchées des navires contenus dans la Grille1 du joueur ennemy
+	 * @param j le joueur actuelle
+	 * @param ennemy le joueur adverse
+	 */
 	public void actuNavireTouchee(Joueur j, Joueur ennemy) {
 		for (String Unecase: ennemy.getCasesNaviresTouches()) {
 			int indN = this.trouverNavireAvecCoord(ennemy, Unecase);
@@ -422,7 +517,14 @@ public class Controller {
 		}
 	}
 	
-	
+	/**
+	 * permet de tirer sur un navire dans la partie graphique
+	 * @param j le joueur actuelle
+	 * @param ennemy le joueur adverse
+	 * @param indN index du navire qui tire
+	 * @param coordCible coordonnées sur laquelle tirer
+	 * @return retourne un booleen suivant que le tir a été efectué ou pas
+	 */
 	public boolean tirerGraphique(Joueur j, Joueur ennemy, int indN, String coordCible) {
 		boolean b = false;
 		int pssc = j.getNavires().get(indN).getPuissance();
@@ -458,7 +560,10 @@ public class Controller {
 		return b;
 	}
 	
-	// ------------------------ DEROULEMENT DE PARTIE ------------------------ //
+	/**
+	 * permet le déroulement de la partie en mode console
+	 * @param partieChargee booléen indiquant si c'est une nouvelle partie ou une partie chargée
+	 */
 	public void partie(boolean partieChargee) {
 		// INITIALISATIONS DES GRILLES 
 		if (partieChargee == false) { 
@@ -560,7 +665,9 @@ public class Controller {
 	}
 
 
-	// ------------------------ SAUVEGARDE UNE PARTIE ------------------------ //
+	/**
+	 * permet de sauvegarder la partie en cours
+	 */
 	public void sauvegarderPartie() {
 		File doss = new File("../../resources/sauvegarde/"); 
 		int nbFich = 0;
@@ -608,7 +715,11 @@ public class Controller {
 	}
 	
 
-	// ------------------------ CHARGER UNE PARTIE ------------------------ //
+	/**
+	 * permet de charger une partie sauvegarder
+	 * @param console booléen indiquant si la partie est en mode console ou non
+	 * @param nameF nom du fichier de sauvegarde à utiliser
+	 */
 	public void chargerPartie(boolean console, String nameF) {
 		// REPERTOIRE DE SAUVEGARDE
 		File doss = new File("../../resources/sauvegarde/"); 
@@ -694,6 +805,11 @@ public class Controller {
 	}
 
 	
+	/**
+	 * permet de charger une ligne de sauvegarde en un navire 
+	 * @param line ligne contenant les informations du navire enregistré
+	 * @return retourne un navire correspondant à la ligne de sauvegarde
+	 */
 	public Navire lineToNavire(String line) {
 		ArrayList<String> seq = new ArrayList<String>(Arrays.asList(line.split(",")));
 		String name = seq.remove(0);
@@ -755,7 +871,7 @@ public class Controller {
 			if (pasCoule == "false") { sousMarin.setCasesNavireTouchees(cases); }
 			return sousMarin;
 		}
-		return new Navire(0,0,"");
+		return null;
 	}
 }
 
