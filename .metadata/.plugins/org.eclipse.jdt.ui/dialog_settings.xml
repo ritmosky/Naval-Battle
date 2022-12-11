@@ -16,7 +16,7 @@
 	<section name="JavaElementSearchActions">
 	</section>
 	<section name="NewPackageWizardPage">
-		<item key="create_package_info_java" value="false"/>
+		<item key="create_package_info_java" value="true"/>
 	</section>
 	<section name="OptionalMessageDialog.hide.">
 		<item key="org.eclipse.jdt.ui.typecomment.deprecated" value="true"/>
@@ -64,7 +64,6 @@
 		<item key="source" value="17"/>
 		<item key="antpath" value="/Users/taoufiq/Documents/java/Naval-Battle/project/src/javadoc.xml"/>
 		<item key="destdir" value="/Users/taoufiq/Documents/java/Naval-Battle/project/src/doc"/>
-		<item key="doctitle" value="Java FTP Client Utility API"/>
 		<section name="projects">
 			<section name="src">
 				<item key="href" value=""/>

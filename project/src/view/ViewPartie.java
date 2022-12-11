@@ -253,29 +253,29 @@ public class ViewPartie {
 	 * La fonction permet d'effectuer le tour de l'ordinateur
 	 */
 	public void tourOrdi() {
-		boolean deplacementFait;
+		boolean deplacementFait = true;
 		mssgbox.setText("TOUR ORDI");
 		Random randP = new Random();
 		int indNv = randP.nextInt(ctrl.getCurrentJ().getNavires().size());
 		Navire n = ctrl.getCurrentJ().getNavires().get(indNv);
 
-		System.out.println("\n------\nNavire = "+indNv);
-		System.out.println("Joueur : "+ctrl.getCurrentJ().getName());
+		//System.out.println("\n------\nNavire = "+indNv);
+		//System.out.println("Joueur : "+ctrl.getCurrentJ().getName());
 
 		// ACTION ALEATOIRE
-		int action = 1;//randP.nextInt(2);
+		int action = randP.nextInt(2);
 		if (action == 0) { 
 			int dir = randP.nextInt(4);
 			ArrayList<String> newCoords = ctrl.getCurrentJ().deplacer(n, Integer.toString(dir));
 			int indCo = randP.nextInt(n.getCasesNavire().size());
 			
-			System.out.println("Case : "+ n.getCasesNavire().get(indCo));
+			/*System.out.println("Case : "+ n.getCasesNavire().get(indCo));
 			System.out.println("Case Touche : "+ n.getCasesTouchees().toString());
 			System.out.println("Direction : "+dir + " 0haut, 1bas, 2gauche, 3droite");
-			System.out.println("newCoords : " + newCoords);
+			System.out.println("newCoords : " + newCoords);*/
 
 			if (newCoords == null) {
-				System.out.println("newCoords null ordi -> tir");
+				//System.out.println("newCoords null ordi -> tir");
 				deplacementFait = false;
 				//passerTour();
 			}
@@ -290,12 +290,12 @@ public class ViewPartie {
 				mssgbox.setText("TOUR ORDI FINI");
 			}
 		}
-		if (action == 1) { 
+		if (action == 1 || !deplacementFait) { 
 			int indCib = randP.nextInt(ctrl.getCurrentJ().getGrid2().caseNom.size());
 			String cib = ctrl.getCurrentJ().getGrid2().caseNom.get(indCib);
 			int indNCib = ctrl.trouverNavireAvecCoord(ctrl.getEnnemy(), cib);
-			System.out.println("------\ncible = "+ cib);
-			if (indNCib > -1) { System.out.println("Navire cible case touchees = "+ ctrl.getEnnemy().getNavires().get(indNCib).getCasesTouchees().toString()); }
+			//System.out.println("------\ncible = "+ cib);
+			//if (indNCib > -1) { System.out.println("Navire cible case touchees = "+ ctrl.getEnnemy().getNavires().get(indNCib).getCasesTouchees().toString()); }
 
 			
 			ctrl.tirerGraphique(ctrl.getCurrentJ(), ctrl.getEnnemy(), indNv, cib);

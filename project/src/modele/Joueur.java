@@ -229,6 +229,7 @@ public class Joueur {
 	 * @return renvoie les nouvelles coordonnées du navire après un déplacement.
 	 */
 	public ArrayList<String> deplacer(Navire N, String sens) {
+		if (N.getCasesTouchees() != null && N.getCasesTouchees().size() > 0) { return null;}
 		switch(sens) {
 		case "0": return deplacerEnHaut(N);
 		case "1": return deplacerEnBas(N);

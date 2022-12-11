@@ -711,7 +711,7 @@ public class Controller {
 			System.out.println("\n\n ---------- SAUVEGARDE TERMINEE ----------\n");
 		}
 		catch (Exception e) { System.err.println(e); }
-		System.exit(0);
+		return;
 	}
 	
 
